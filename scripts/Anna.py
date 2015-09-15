@@ -10,9 +10,9 @@ def commands(nick,channel,message):
         ircsock.send('PRIVMSG %s :%s: My other command is shellium.\r\n' % (channel,nick))
 
 server = "irc.freenode.net"
-channel = "#tihlde"
+channel = "#tihlde-drift"
 botnick = "anna"
-
+password = open("pw").read()
 
 def ping():
     ircsock.send("PONG :pingis\n")
@@ -21,7 +21,7 @@ def sendmsg(chan , msg):
     ircsock.send("PRIVMSG "+ chan +" :"+ msg +"\n")
 
 def joinchan(chan):
-    ircsock.send("JOIN "+ chan +"\n")
+    ircsock.send("JOIN "+ chan + "[" + password + "]" + "\n")
 
 def hello():
     ircsock.send("PRIVMSG "+ channel +" :Sup fucker!\n")
@@ -39,8 +39,8 @@ while 1: # Be careful with these! it might send you to an infinite loop
     print(ircmsg) # Here we print what's coming from the server
     if ircmsg.find(' PRIVMSG ') != -1:
         nick=ircmsg.split('!')[0][1:]
-        channel = ircmsg.split(' PRIVMSG ')[-1].split(' :')[0]
-        commands(nick,channel,ircmsg)
+        thisChan = ircmsg.split(' PRIVMSG ')[-1].split(' :')[0]
+        commands(nick, thisChan, ircmsg)
 
     if ircmsg.find(":Hello "+ botnick) != -1: # if someone says "Hello anna"
         hello()
