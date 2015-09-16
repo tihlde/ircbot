@@ -21,13 +21,14 @@ def hello():
 
 
 def send(msg):
+    print(msg)
     ircsock.send(msg + "\r\n")
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((server, 6667))
 send("USER " + botnick + " " + botnick + " " + server + " : pybot")
-ircsock.send("NICK " + botnick + "\n")
+send("NICK " + botnick)
 
 joinchan(channel)
 
@@ -38,7 +39,7 @@ while 1:
 
     if ircmsg.find(":Hello " + botnick) != -1:
         hello()
-    elif ircmsg.find(botnick) != -1:
+    elif (ircmsg.find(botnick) != -1 and ircmsg.find("PRIVMSG #tihlde-drift") != 1):
         send("I cannot do that " + ircmsg[1:(ircmsg.find("!") - 1)])
 
     if ircmsg.find("PING :") != -1:  # respond to pings
