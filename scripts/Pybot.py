@@ -39,7 +39,7 @@ while 1:
 
     if ircmsg.find(":Hello " + botnick) != -1:
         hello()
-    elif (ircmsg.find(botnick) != -1 and ircmsg.find("PRIVMSG #tihlde-drift") != 1):
+    elif (ircmsg.find(botnick) != -1) and (ircmsg.find("PRIVMSG #tihlde-drift") != 1) and (ircmsg.find("1") != -1):
         send("I cannot do that " + ircmsg[1:(ircmsg.find("!") - 1)])
 
     if ircmsg.find("PING :") != -1:  # respond to pings
