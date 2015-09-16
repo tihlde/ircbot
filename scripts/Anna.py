@@ -38,6 +38,8 @@ while 1:
 
     if ircmsg.find(":Hello " + botnick) != -1:
         hello()
+    elif ircmsg.find(botnick) != -1:
+        send("I cannot do that " + ircmsg[1:(ircmsg.find("!") - 1)])
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
