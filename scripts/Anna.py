@@ -27,7 +27,7 @@ def send(msg):
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((server, 6667))
 send("USER " + botnick + " " + botnick + " " + server + " : pybot")
-send("NICK " + botnick)
+ircsock.send("NICK " + botnick + "\n")
 
 joinchan(channel)
 
