@@ -1,37 +1,43 @@
 __author__ = 'Harald'
 
-# Import some necessary libraries.
 import socket
-import time
 
 server = "irc.freenode.net"
 channel = '#tihlde-drift'
-botnick = "hilde-drift"
+botnick = "hal-9001"
 password = open("pw").read()
 
-def sendmsg(chan , msg):
-    ircsock.send("PRIVMSG "+ chan +" :"+ msg +"\r\n")
+
+def sendmsg(chan, msg):
+    send("PRIVMSG " + chan + " :" + msg)
+
 
 def joinchan(chan):
-    ircsock.send("JOIN "+ chan + " "  + password + "\r\n")
+    send("JOIN " + chan + " " + password)
+
 
 def hello():
-    ircsock.send("PRIVMSG "+ channel +" :Sup fucker\r\n")
+    send("PRIVMSG " + channel + " :sup")
+
+
+def send(msg):
+    ircsock.send(msg + "\r\n")
+
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ircsock.connect((server, 6667)) # Here we connect to the server using the port 6667
-ircsock.send("USER "+ botnick + " " + botnick +" " + server + " : pybot\r\n")
-ircsock.send("NICK "+ botnick +"\n") # here we actually assign the nick to the bot
+ircsock.connect((server, 6667))
+send("USER " + botnick + " " + botnick + " " + server + " : pybot")
+send("NICK " + botnick)
 
-joinchan(channel) # Join the channel using the functions we previously defined
+joinchan(channel)
 
-while 1: # Be careful with these! it might send you to an infinite loop
-    ircmsg = ircsock.recv(2048) # receive data from the server
-    ircmsg = ircmsg.strip('\n') # removing any unnecessary linebreaks.
-    print(ircmsg) # Here we print what's coming from the server
+while 1:
+    ircmsg = ircsock.recv(2048)  # receive data from the server
+    ircmsg = ircmsg.strip('\n')  # removing any unnecessary linebreaks.
+    print(ircmsg)
 
-    if ircmsg.find(":Hello "+ botnick) != -1: # if someone says "Hello anna"
+    if ircmsg.find(":Hello " + botnick) != -1:
         hello()
 
-    if ircmsg.find("PING :") != -1: # if the server pings us then we've got to respond!
-        ircsock.send("PONG " + ircmsg[ircmsg.find(":") + 1])
+    if ircmsg.find("PING :") != -1:  # respond to pings
+        send("PONG " + ircmsg[ircmsg.find(":") + 1])
