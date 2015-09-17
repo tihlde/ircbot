@@ -1,7 +1,12 @@
 __author__ = 'Harald'
 
 import socket
+import time
 from random import randint
+from .ArduinoCompiler import compileAndUpload
+
+updateTime = 5  # time between updates in seconds
+lastUpdate = time.time()  # time since last update
 
 server = "irc.freenode.net"
 channel = '#tihlde-drift'
@@ -41,13 +46,19 @@ joinchan(channel)
 while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing any unnecessary linebreaks.
-    ircmsg = ircmsg.lower()
+
     print(ircmsg)
 
-    if ircmsg.find(":hello " + botnick) != -1:
+    if ircmsg.lower.find(":hello " + botnick) != -1:
         send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
     elif ircmsg.find(botnick) > ircmsg.find("!") and ircmsg.find("PRIVMSG #tihlde-drift") != -1:
         send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
+
+    now = time.time()
+    if now > lastUpdate + updateTime:
+        # more than the updateTime has gone by
+        lastUpdate = now
+        send("MSG(hilde): .øl")
