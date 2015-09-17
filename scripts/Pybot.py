@@ -4,7 +4,7 @@ __author__ = 'Harald'
 import socket
 import time
 from random import randint
-from .ArduinoCompiler import compileAndUpload
+from subprocess import call
 
 updateTime = 5  # time between updates in seconds
 lastUpdate = time.time()  # time since last update
@@ -36,6 +36,17 @@ def send(msg):
     print(msg)
     ircsock.send(msg + "\r\n")
 
+def compileAndUpload(beers):
+    codeDeclerations = ""
+    codeSetupStart = "void setup() {"
+    codeSetup = ""
+    codeSetupEnd = "}"
+    codeLoopStart = "void loop() {"
+    codeLoop = ""
+    codeLoopEnd = ""
+    code = codeDeclerations + codeSetupStart + codeSetup + codeSetupEnd + codeLoopStart + codeLoop + codeLoopEnd;
+    call("")
+
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((server, 6667))
@@ -62,4 +73,4 @@ while 1:
     if now > lastUpdate + updateTime:
         # more than the updateTime has gone by
         lastUpdate = now
-        send("MSG(hilde): .øl")
+        send("PRIVMSG hilde: .øl")
