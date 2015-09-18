@@ -36,7 +36,7 @@ def send(msg):
     print(msg)
     ircsock.send(msg + "\r\n")
 
-def compileAndUpload(beers):
+def compileAndUpload(beercount):
     codeDeclerations = ""
     codeSetupStart = "void setup() {"
     codeSetup = ""
@@ -44,8 +44,8 @@ def compileAndUpload(beers):
     codeLoopStart = "void loop() {"
     codeLoop = ""
     codeLoopEnd = ""
-    code = codeDeclerations + codeSetupStart + codeSetup + codeSetupEnd + codeLoopStart + codeLoop + codeLoopEnd;
-    call("")
+    code = codeDeclerations + codeSetupStart + codeSetup + codeSetupEnd + codeLoopStart + codeLoop + codeLoopEnd
+    call("echo 'This is called from python'") # System command line call
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -64,10 +64,17 @@ while 1:
 
     print(ircmsg)
 
-    if ircmsg.lower().find(":hello " + botnick) != -1:
-        send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
-    elif ircmsg.find(botnick) > ircmsg.find("!") and ircmsg.find("PRIVMSG #tihlde-drift") != -1:
-        send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
+    if(ircmsg.find(":hilde!") != -1 and ircmsg.find("PRIVMSG " + botnick + " :") != -1):
+        # this is the beer-count, update accordingly
+        beercount = ircmsg[ircmsg.find("PRIVMSG " + botnick + " :"):]
+        print("beercount: " + beercount)
+        compileAndUpload(beercount)
+
+    if(ircmsg.find("PRIVMSG #tihlde-drift") != -1):
+        if ircmsg.lower().find(":hello " + botnick) != -1:
+            send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
+        elif ircmsg.find(botnick) > ircmsg.find("!"):
+            send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
