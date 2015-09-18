@@ -64,7 +64,7 @@ while 1:
 
     print(ircmsg)
 
-    if ircmsg.lower.find(":hello " + botnick) != -1:
+    if ircmsg.lower().find(":hello " + botnick) != -1:
         send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
     elif ircmsg.find(botnick) > ircmsg.find("!") and ircmsg.find("PRIVMSG #tihlde-drift") != -1:
         send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
