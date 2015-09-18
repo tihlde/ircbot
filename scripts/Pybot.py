@@ -45,7 +45,7 @@ def compileAndUpload(beercount):
     codeLoop = ""
     codeLoopEnd = ""
     code = codeDeclerations + codeSetupStart + codeSetup + codeSetupEnd + codeLoopStart + codeLoop + codeLoopEnd
-    call("echo 'This is called from python'") # System command line call
+    #call("echo 'This is called from python'") # System command line call
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
