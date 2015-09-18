@@ -66,7 +66,7 @@ while 1:
 
     if(ircmsg.find(":hilde!") != -1 and ircmsg.find("PRIVMSG " + botnick + " :") != -1):
         # this is the beer-count, update accordingly
-        beercount = ircmsg[ircmsg.find("PRIVMSG " + botnick + " :"):]
+        beercount = ircmsg[ircmsg.find("PRIVMSG " + botnick + " :") + 10 + len(botnick):]
         print("beercount: " + beercount)
         compileAndUpload(beercount)
 
