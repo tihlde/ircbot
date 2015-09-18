@@ -6,7 +6,7 @@ import time
 from random import randint
 from subprocess import call
 
-updateTime = 5  # time between updates in seconds
+updateTime = 60  # time between updates in seconds
 lastUpdate = time.time()  # time since last update
 
 server = "irc.freenode.net"
@@ -54,7 +54,7 @@ send("USER " + botnick + " " + botnick + " " + server + " : pybot")
 send("NICK " + botnick)
 
 joinchan("#tihlde")
-send("PRIVMSG hilde: .øl")
+send("PRIVMSG hilde :.øl")
 
 joinchan(channel)
 
@@ -76,4 +76,4 @@ while 1:
     if now > lastUpdate + updateTime:
         # more than the updateTime has gone by
         lastUpdate = now
-        send("PRIVMSG hilde: .øl")
+        send("PRIVMSG hilde :.øl")
