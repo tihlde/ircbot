@@ -1,4 +1,4 @@
-# This Python file uses the following encoding: utf-8
+# coding: utf-8
 __author__ = 'Harald'
 
 import socket
@@ -52,6 +52,9 @@ ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((server, 6667))
 send("USER " + botnick + " " + botnick + " " + server + " : pybot")
 send("NICK " + botnick)
+
+joinchan("#tihlde")
+send("PRIVMSG hilde: .øl")
 
 joinchan(channel)
 
