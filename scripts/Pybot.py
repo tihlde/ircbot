@@ -38,7 +38,15 @@ def send(msg):
     ircsock.send(msg + "\r\n")
 
 def pingServers():
-    send("PRIVMSG " + channel + " :colargol: " + getPing("colargol") + "  fantorangen: " + getPing("fantorangen"))
+    send("PRIVMSG " + channel + 
+        " :colargol: " + getPing("colargol") + 
+        "  fantorangen: " + getPing("fantorangen") +
+        "  odin: " + getPing("odin") +
+        "  coastguard: " + getPing("coastguard") +
+        "  handymanny: " + getPing("handymanny") +
+        "  balthazar: " + getPing("balthazar") +
+        "  thor: " + getPing("thor")
+    )
 
 def getPing(hostname):
     if(os.system("ping -c 1 " + hostname + ".tihlde.org") == 0):
