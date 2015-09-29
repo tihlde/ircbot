@@ -3,6 +3,7 @@ __author__ = 'Harald'
 
 import socket
 import time
+import os
 from random import randint
 from subprocess import call
 
@@ -36,25 +37,20 @@ def send(msg):
     print(msg)
     ircsock.send(msg + "\r\n")
 
-def compileAndUpload(beercount):
-    codeDeclerations = ""
-    codeSetupStart = "void setup() {"
-    codeSetup = ""
-    codeSetupEnd = "}"
-    codeLoopStart = "void loop() {"
-    codeLoop = ""
-    codeLoopEnd = ""
-    code = codeDeclerations + codeSetupStart + codeSetup + codeSetupEnd + codeLoopStart + codeLoop + codeLoopEnd
-    #call("echo 'This is called from python'") # System command line call
+def pingServers():
+    send("PRIVMSG " + channel + " :colargol: " + getPing("colargol") + "  fantorangen: " + getPing("fantorangen"))
+
+def getPing(hostname):
+    if(os.system("ping -c 1 " + hostname + ".tihlde.org") == 0):
+        return "\x033,1oppe\x03"
+    else:
+        return "\x030,4NEDE\x03"
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((server, 6667))
 send("USER " + botnick + " " + botnick + " " + server + " : pybot")
 send("NICK " + botnick)
-
-joinchan("#tihlde")
-send("PRIVMSG hilde :.øl")
 
 joinchan(channel)
 
@@ -64,15 +60,11 @@ while 1:
 
     print(ircmsg)
 
-    if(ircmsg.find(":hilde!") != -1 and ircmsg.find("PRIVMSG " + botnick + " :") != -1):
-        # this is the beer-count, update accordingly
-        beercount = ircmsg[ircmsg.find("PRIVMSG " + botnick + " :") + 10 + len(botnick):]
-        print("beercount: " + beercount)
-        compileAndUpload(beercount)
-
     if(ircmsg.find("PRIVMSG #tihlde-drift") != -1):
         if ircmsg.lower().find(":hello " + botnick) != -1:
             send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
+        elif ircmsg.find(".serverstatus") != -1:
+            pingServers()
         elif ircmsg.find(botnick) > ircmsg.find("!"):
             send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
 
