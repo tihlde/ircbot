@@ -81,19 +81,15 @@ while 1:
 
     print(ircmsg)
 
-    if(ircmsg.find("PRIVMSG #tihlde-drift") != -1):
+    if(ircmsg.find("PRIVMSG #tihlde-drift") != -1): # Responds to 'Hello botnick'
         if ircmsg.lower().find(":hello " + botnick) != -1:
             send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
-        elif ircmsg.find(".serverstatus") != -1:
+        elif ircmsg.find(".serverstatus") != -1: # Responds to -serverstatus
             pingServers()
-        elif ircmsg.find(".nerdvanastatus") != -1:
+        elif ircmsg.find(".nerdvanastatus") != -1: # Respons to .nerdvanastatus
             pingNerdvana()
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
 
     now = time.time()
-    if now > lastUpdate + updateTime:
-        # more than the updateTime has gone by
-        lastUpdate = now
-        send("PRIVMSG hilde :.øl")
