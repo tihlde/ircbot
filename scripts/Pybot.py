@@ -48,11 +48,24 @@ def pingServers():
         "  thor: " + getPing("thor")
     )
 
+def pingNerdvana():
+    send("PRIVMSG " + channel +
+    " :vcenter: " + getNerdPing("vcenter") +
+    "  bashful: " + getNerdPing("bashful") +
+    "  grumpy: " + getNerdPing("grumpy") +
+    "  dopey: " + getNerdPing("dopey") +
+    "  sleepy: " + getNerdPing("sleepy") +
+    "  sneezy: " + getNerdPing("sneezy")
+    )
+
 def getPing(hostname):
     if(os.system("ping -c 1 " + hostname + ".tihlde.org") == 0):
         return "\x033,1oppe\x03"
     else:
         return "\x030,4NEDE\x03"
+
+def getNerdPing(hostname):
+    return getPing(hostname + ".nerdvana")
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,6 +86,8 @@ while 1:
             send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
         elif ircmsg.find(".serverstatus") != -1:
             pingServers()
+        elif ircmsg.find(".nerdvanastatus") != -1:
+            pingNerdvana()
         elif ircmsg.find(botnick) > ircmsg.find("!"):
             send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
 
