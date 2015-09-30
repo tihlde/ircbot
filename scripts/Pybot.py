@@ -88,8 +88,6 @@ while 1:
             pingServers()
         elif ircmsg.find(".nerdvanastatus") != -1:
             pingNerdvana()
-        elif ircmsg.find(botnick) > ircmsg.find("!"):
-            send("PRIVMSG " + channel + " :I cannot do that " + ircmsg[1:(ircmsg.find("!"))])
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
