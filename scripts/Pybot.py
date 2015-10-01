@@ -8,7 +8,7 @@ from random import randint
 from subprocess import call
 
 updateTime = 60  # time between updates in seconds
-lastUpdate = time.time()  # time since last update
+lastUpdate = 0  # time since last update
 
 server = "irc.freenode.net"
 channel = '#tihlde-drift'
@@ -24,6 +24,22 @@ greetings = ["We meet again",
              "Did you hear something?",
              "I think some sub-intelligent species is trying to establish contact..."]
 
+status = {
+    'colargol' : 'notYetAvailable',
+    'fantorangen' : 'notYetAvailable',
+    'odin' : 'notYetAvailable',
+    'coastguard' : 'notYetAvailable',
+    'handymanny' : 'notYetAvailable',
+    'balthazar' : 'notYetAvailable',
+    'thor' : 'notYetAvailable',
+    'vcenter.nerdvana' : 'notYetAvailable',
+    'bahsful.nerdvana' : 'notYetAvailable',
+    'dopey.nerdvana' : 'notYetAvailable',
+    'grumpy.nerdvana' : 'notYetAvailable',
+    'sneezy.nerdvana' : 'notYetAvailable',
+    'sleepy.nerdvana' : 'notYetAvailable'
+}
+
 
 def sendmsg(chan, msg):
     send("PRIVMSG " + chan + " :" + msg)
@@ -38,24 +54,22 @@ def send(msg):
     ircsock.send(msg + "\r\n")
 
 def pingServers():
-    send("PRIVMSG " + channel + 
-        " :colargol: " + getPing("colargol") + 
-        "  fantorangen: " + getPing("fantorangen") +
-        "  odin: " + getPing("odin") +
-        "  coastguard: " + getPing("coastguard") +
-        "  handymanny: " + getPing("handymanny") +
-        "  balthazar: " + getPing("balthazar") +
-        "  thor: " + getPing("thor")
+    sendmsg("colargol: " + status["colargol"] + 
+        "  fantorangen: " + status["fantorangen"] +
+        "  odin: " + status["odin"] +
+        "  coastguard: " + status["coastguard"] +
+        "  handymanny: " + status["handymanny"] +
+        "  balthazar: " + status["balthazar"] +
+        "  thor: " + status["thor"]
     )
 
 def pingNerdvana():
-    send("PRIVMSG " + channel +
-    " :vcenter: " + getNerdPing("vcenter") +
-    "  bashful: " + getNerdPing("bashful") +
-    "  grumpy: " + getNerdPing("grumpy") +
-    "  dopey: " + getNerdPing("dopey") +
-    "  sleepy: " + getNerdPing("sleepy") +
-    "  sneezy: " + getNerdPing("sneezy")
+    send("vcenter: " + status["vcenter.nerdvana"] +
+    "  bashful: " + status["bashful.nerdvana"] +
+    "  grumpy: " + status["grumpy.erdvana"] +
+    "  dopey: " + status["dopey.nerdvana"] +
+    "  sleepy: " + status["sleepy.nerdvana"] +
+    "  sneezy: " + status["sneezy.nerdvana"]
     )
 
 def getPing(hostname):
@@ -64,8 +78,15 @@ def getPing(hostname):
     else:
         return "\x030,4NEDE\x03"
 
-def getNerdPing(hostname):
-    return getPing(hostname + ".nerdvana")
+def updateStatuses():
+    for key in status:
+        status[key] = getPing(key)
+
+def warnIfDown():
+    msg = ""
+    for key in status:
+        if status[key].find("NEDE") != -1:
+            msg += key[:key.find(".")] + ": " + status[key] + " \x030,4ER NEDE\x03\n"
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,7 +98,7 @@ joinchan(channel)
 
 while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
-    ircmsg = ircmsg.strip('\n')  # removing any unnecessary linebreaks.
+    ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
     print(ircmsg)
 
@@ -93,3 +114,7 @@ while 1:
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
 
     now = time.time()
+    if(now > lastUpdate + updateTime):
+        lastUpdate = now
+        updateStatuses()
+        warnIfDown()
