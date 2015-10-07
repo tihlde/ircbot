@@ -5,7 +5,6 @@ import socket
 import time
 import os
 from random import randint
-from subprocess import call
 
 updateDay = time.strftime("%d")
 
@@ -24,59 +23,67 @@ greetings = ["We meet again",
              "I think some sub-intelligent species is trying to establish contact..."]
 
 status = {
-    'colargol' : 'notYetAvailable',
-    'fantorangen' : 'notYetAvailable',
-    'odin' : 'notYetAvailable',
-    'coastguard' : 'notYetAvailable',
-    'handymanny' : 'notYetAvailable',
-    'balthazar' : 'notYetAvailable',
-    'thor' : 'notYetAvailable',
-    'vcenter.nerdvana' : 'notYetAvailable',
-    'bahsful.nerdvana' : 'notYetAvailable',
-    'dopey.nerdvana' : 'notYetAvailable',
-    'grumpy.nerdvana' : 'notYetAvailable',
-    'sneezy.nerdvana' : 'notYetAvailable',
-    'sleepy.nerdvana' : 'notYetAvailable'
+    'colargol': 'notYetAvailable',
+    'fantorangen': 'notYetAvailable',
+    'odin': 'notYetAvailable',
+    'coastguard': 'notYetAvailable',
+    'handymanny': 'notYetAvailable',
+    'balthazar': 'notYetAvailable',
+    'thor': 'notYetAvailable',
+    'vcenter.nerdvana': 'notYetAvailable',
+    'bahsful.nerdvana': 'notYetAvailable',
+    'dopey.nerdvana': 'notYetAvailable',
+    'grumpy.nerdvana': 'notYetAvailable',
+    'sneezy.nerdvana': 'notYetAvailable',
+    'sleepy.nerdvana': 'notYetAvailable'
 }
+
 
 def joinchan(chan):
     send("JOIN " + chan + " " + password)
+
 
 def send(msg):
     print(msg)
     ircsock.send(msg + "\r\n")
 
+
 def sendmsg(chan, msg):
     send("PRIVMSG " + chan + " :" + msg)
 
+
 def pingServers():
     sendmsg(channel, "colargol: " + status["colargol"] +
-        "  fantorangen: " + status["fantorangen"] +
-        "  odin: " + status["odin"] +
-        "  coastguard: " + status["coastguard"] +
-        "  handymanny: " + status["handymanny"] +
-        "  balthazar: " + status["balthazar"] +
-        "  thor: " + status["thor"]
-    )
+            "  fantorangen: " + status["fantorangen"] +
+            "  odin: " + status["odin"] +
+            "  coastguard: " + status["coastguard"] +
+            "  handymanny: " + status["handymanny"] +
+            "  balthazar: " + status["balthazar"] +
+            "  thor: " + status["thor"]
+            )
+
 
 def pingNerdvana():
     sendmsg(channel, "vcenter: " + status["vcenter.nerdvana"] +
-    "  bashful: " + status["bashful.nerdvana"] +
-    "  grumpy: " + status["grumpy.erdvana"] +
-    "  dopey: " + status["dopey.nerdvana"] +
-    "  sleepy: " + status["sleepy.nerdvana"] +
-    "  sneezy: " + status["sneezy.nerdvana"]
-    )
+            "  bashful: " + status["bashful.nerdvana"] +
+            "  grumpy: " + status["grumpy.erdvana"] +
+            "  dopey: " + status["dopey.nerdvana"] +
+            "  sleepy: " + status["sleepy.nerdvana"] +
+            "  sneezy: " + status["sneezy.nerdvana"]
+            )
+
 
 def getPing(hostname):
-    if(os.system("ping -c 1 " + hostname + ".tihlde.org") == 0):
+    if os.system("ping -c 1 " + hostname + ".tihlde.org") == 0:
         return "\x033,1oppe\x03"
     else:
         return "\x030,4NEDE\x03"
 
+
 def updateStatuses():
     for key in status:
         status[key] = getPing(key)
+
 
 def warnIfDown():
     msg = ""
@@ -100,20 +107,20 @@ while 1:
 
     print(ircmsg)
 
-    if(ircmsg.find("PRIVMSG #tihlde-drift") != -1): # Responds to 'Hello botnick'
+    if ircmsg.find("PRIVMSG #tihlde-drift") != -1:  # Responds to 'Hello botnick'
         if ircmsg.lower().find(":hello " + botnick) != -1:
             send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
-        elif ircmsg.find(".serverstatus") != -1: # Responds to -serverstatus
+        elif ircmsg.find(".serverstatus") != -1:  # Responds to -serverstatus
             updateStatuses()
             pingServers()
-        elif ircmsg.find(".nerdvanastatus") != -1: # Respons to .nerdvanastatus
+        elif ircmsg.find(".nerdvanastatus") != -1:  # Respons to .nerdvanastatus
             updateStatuses()
             pingNerdvana()
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
 
-    if(time.strftime("%d") != updateDay):
+    if time.strftime("%d") != updateDay:
         updateStatuses()
         warnIfDown()
         updateDay = time.strftime("%d")
