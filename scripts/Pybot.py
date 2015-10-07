@@ -7,8 +7,7 @@ import os
 from random import randint
 from subprocess import call
 
-updateTime = 60  # time between updates in seconds
-lastUpdate = 0  # time since last update
+updateDay = time.strftime("%d")
 
 server = "irc.freenode.net"
 channel = '#tihlde-drift'
@@ -84,6 +83,8 @@ def warnIfDown():
     for key in status:
         if status[key].find("NEDE") != -1:
             msg += key[:key.find(".")] + ": " + status[key] + " \x030,4ER NEDE\x03\n"
+    if len(msg) > 0:
+        sendmsg(channel, msg)
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -103,15 +104,16 @@ while 1:
         if ircmsg.lower().find(":hello " + botnick) != -1:
             send("PRIVMSG " + channel + " :" + greetings[randint(0, len(greetings) - 1)])
         elif ircmsg.find(".serverstatus") != -1: # Responds to -serverstatus
+            updateStatuses()
             pingServers()
         elif ircmsg.find(".nerdvanastatus") != -1: # Respons to .nerdvanastatus
+            updateStatuses()
             pingNerdvana()
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
 
-    now = time.time()
-    if(now > lastUpdate + updateTime):
-        lastUpdate = now
+    if(time.strftime("%d") != updateDay):
         updateStatuses()
         warnIfDown()
+        updateDay = time.strftime("%d")
