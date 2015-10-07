@@ -40,21 +40,18 @@ status = {
     'sleepy.nerdvana' : 'notYetAvailable'
 }
 
-
-def sendmsg(chan, msg):
-    send("PRIVMSG " + chan + " :" + msg)
-
-
 def joinchan(chan):
     send("JOIN " + chan + " " + password)
-
 
 def send(msg):
     print(msg)
     ircsock.send(msg + "\r\n")
 
+def sendmsg(chan, msg):
+    send("PRIVMSG " + chan + " :" + msg)
+
 def pingServers():
-    sendmsg("colargol: " + status["colargol"] + 
+    sendmsg(channel, "colargol: " + status["colargol"] +
         "  fantorangen: " + status["fantorangen"] +
         "  odin: " + status["odin"] +
         "  coastguard: " + status["coastguard"] +
@@ -64,7 +61,7 @@ def pingServers():
     )
 
 def pingNerdvana():
-    send("vcenter: " + status["vcenter.nerdvana"] +
+    sendmsg(channel, "vcenter: " + status["vcenter.nerdvana"] +
     "  bashful: " + status["bashful.nerdvana"] +
     "  grumpy: " + status["grumpy.erdvana"] +
     "  dopey: " + status["dopey.nerdvana"] +
