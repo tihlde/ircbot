@@ -66,7 +66,7 @@ def pingServers():
 def pingNerdvana():
     sendmsg(channel, "vcenter: " + status["vcenter.nerdvana"] +
             "  bashful: " + status["bashful.nerdvana"] +
-            "  grumpy: " + status["grumpy.erdvana"] +
+            "  grumpy: " + status["grumpy.nerdvana"] +
             "  dopey: " + status["dopey.nerdvana"] +
             "  sleepy: " + status["sleepy.nerdvana"] +
             "  sneezy: " + status["sneezy.nerdvana"]
