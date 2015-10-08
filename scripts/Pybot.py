@@ -128,7 +128,7 @@ while 1:
             updateStatuses()
             pingNerdvana()
         elif ircmsg.find(".discotime!") != -1:
-            lastDisco = time.time()
+            lastDisco = now
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
