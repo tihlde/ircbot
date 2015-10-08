@@ -9,9 +9,7 @@ from random import randint
 
 updateDay = time.strftime("%d")
 
-lastDisco = 0
-discoTime = 20 # in seconds
-ser = serial.serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600)
 
 server = "irc.freenode.net"
 channel = '#tihlde-drift'
@@ -111,12 +109,6 @@ while 1:
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
     print(ircmsg)
-
-    now = time.time()
-    if now < lastDisco + discoTime:
-        ser.write(1)
-    else:
-        ser.write(0)
     
     if ircmsg.find("PRIVMSG #tihlde-drift") != -1:  # Responds to 'Hello botnick'
         if ircmsg.lower().find(":hello " + botnick) != -1:
@@ -127,8 +119,9 @@ while 1:
         elif ircmsg.find(".nerdvanastatus") != -1:  # Respons to .nerdvanastatus
             updateStatuses()
             pingNerdvana()
-        elif ircmsg.find(".discotime!") != -1:
-            lastDisco = now
+    if ircmsg.find(".discotime!") != -1:
+        print("Discotime!")
+        ser.write('1')
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
