@@ -31,7 +31,7 @@ status = {
     'balthazar': 'notYetAvailable',
     'thor': 'notYetAvailable',
     'vcenter.nerdvana': 'notYetAvailable',
-    'bahsful.nerdvana': 'notYetAvailable',
+    'bashful.nerdvana': 'notYetAvailable',
     'dopey.nerdvana': 'notYetAvailable',
     'grumpy.nerdvana': 'notYetAvailable',
     'sneezy.nerdvana': 'notYetAvailable',
