@@ -121,7 +121,9 @@ while 1:
             pingNerdvana()
     if ircmsg.find(".discotime!") != -1:
         print("Discotime!")
-        ser.write('1')
+        ser.write(b'1')
+    else:
+        ser.write(b'0')
 
     if ircmsg.find("PING :") != -1:  # respond to pings
         send("PONG " + ircmsg[ircmsg.find(":") + 1])
