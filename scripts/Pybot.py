@@ -144,7 +144,7 @@ while 1:
         if nerdvanaStatus:  # Respond to .nerdvanastatus
             sendNerdvanaStatuses()
 
-        if ircmsg.find('.updatemods') != -1:
+        if ircmsg.find('.updatemods') != -1:  # respond to .updatemods
             requestNames()
 
         if isMod(findName(ircmsg)):  # if sender is a mod
@@ -164,9 +164,11 @@ while 1:
                 print('Device unplugged or wrong device used')
 
     # if this message is a name-list
-    if ircmsg.find(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :') != -1 and ircmsg.find(
-            ':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.') != -1:
-        updateMods(ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'))
+    if ircmsg.find(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :') != -1:
+        nameString = ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :')
+        nameString = nameString.strip('\r\n:leguin.freenode.net')
+        if nameString.find('hal-9001') != -1:
+            updateMods(nameString)
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
