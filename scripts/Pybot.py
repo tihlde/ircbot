@@ -122,11 +122,14 @@ while 1:
             discoActive = True
             sendText("Discotime reactivated")
 
-        if discoActive and ircmsg.find('.discotime') != -1:
-            print('Discotime!')
-            ser.write(b'1')
-        else:
-            ser.write(b'0')
+        try:
+            if discoActive and ircmsg.find('.discotime') != -1:
+                print('Discotime!')
+                ser.write(b'1')
+            else:
+                ser.write(b'0')
+        except serial.serialutil.SerialException:
+            print('Device unplugged or wrong device used')
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
