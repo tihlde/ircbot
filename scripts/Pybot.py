@@ -48,12 +48,12 @@ def send(msg):
     ircsock.send(msg + '\r\n')
 
 
-def sendText(chan, msg):
-    send('PRIVMSG ' + chan + ' :' + msg)
+def sendText(msg):
+    send('PRIVMSG ' + channel + ' :' + msg)
 
 
 def sendServerStatuses():
-    sendText(channel, 'colargol: ' + statuses['colargol'] +
+    sendText('colargol: ' + statuses['colargol'] +
              '  fantorangen: ' + statuses['fantorangen'] +
              '  odin: ' + statuses['odin'] +
              '  coastguard: ' + statuses['coastguard'] +
@@ -63,7 +63,7 @@ def sendServerStatuses():
 
 
 def sendNerdvanaStatuses():
-    sendText(channel, 'vcenter: ' + statuses['vcenter.nerdvana'] +
+    sendText('vcenter: ' + statuses['vcenter.nerdvana'] +
              '  bashful: ' + statuses['bashful.nerdvana'] +
              '  grumpy: ' + statuses['grumpy.nerdvana'] +
              '  dopey: ' + statuses['dopey.nerdvana'] +
@@ -86,7 +86,7 @@ def warnIfDown():
                 serverName = key[:key.find('.')]
             msg += serverName + ': ' + statuses[key] + ' \x030,4ER NEDE\x03\n'
     if len(msg) > 0:
-        sendText(channel, msg)
+        sendText(msg)
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -106,7 +106,6 @@ while 1:
     if ircmsg.find('PRIVMSG #tihlde-drift') != -1:
         serverStatus = (ircmsg.find('.serverstatus') != -1)
         nerdvanaStatus = (ircmsg.find('.nerdvanastatus') != -1)
-
         if serverStatus or nerdvanaStatus:
             updateStatuses()
 
@@ -118,10 +117,12 @@ while 1:
 
         if ircmsg.find('.discodeactivate') != -1:
             discoActive = False
+            sendText("Discotime deactivated")
         elif ircmsg.find('.discoreactivate') != -1:
             discoActive = True
+            sendText("Discotime reactivated")
 
-        if ircmsg.find('.discotime') != -1 and discoActive:
+        if discoActive and ircmsg.find('.discotime') != -1:
             print('Discotime!')
             ser.write(b'1')
         else:
