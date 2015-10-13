@@ -27,7 +27,7 @@ def updateMods(names):
     print('MSG AFTER SPLIT')
     print(nameList)
     mods[:] = []
-    for name in names:
+    for name in nameList:
         if name.find('@') != -1:
             mods.append(name)
     print('MOD-LIST')
