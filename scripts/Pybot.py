@@ -9,6 +9,8 @@ import serial
 
 
 discoActive = True
+maxDiscoTime = 3000
+standardDiscoTime = 20
 updateDay = time.strftime('%d')
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
@@ -158,8 +160,14 @@ while 1:
                 sendText('Discotime reactivated')
             try:
                 if discoActive and ircmsg.find('.discotime') != -1:
-                    print('Discotime!')
-                    ser.write(b'1')
+                    try:
+                        discoTime = int(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')])
+                    except ValueError:
+                        discoTime = standardDiscoTime
+                    if discoTime > maxDiscoTime:
+                        discoTime = maxDiscoTime
+                    print('Discotime for ' + str(discoTime) + '!')
+                    ser.write(bytes(discoTime, 'UTF-8'))
                 else:
                     ser.write(b'0')
             except serial.serialutil.SerialException:

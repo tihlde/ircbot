@@ -3,8 +3,7 @@ int p1 = 3;
 int p2 = 4;
 int p3 = 5;
 
-unsigned long discoTime = 20; // in seconds
-int count = (discoTime * 1000) / (6 * wait);
+int count = 0;
 
 void setup() {
   pinMode(p1, OUTPUT);
@@ -19,7 +18,14 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
-  if(Serial.available() && Serial.parseInt() > 0) {
+  if(Serial.available()) {
+    int dTime = Serial.parseInt();
+    if(dTime > 0) {
+      count = (dTime * 1000) / (6 * wait);
+    } else {
+      return;
+    }
+    
     digitalWrite(13, HIGH);
     for(int i = 0; i < count; i++) {
       digitalWrite(p1, 1);
