@@ -129,7 +129,9 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
-    print(ircmsg)  # print received message
+    if(len(ircmsg) > 0):
+        print('MESSAGE')
+        print(ircmsg)  # print received message
 
     # Make sure the message is in specified channel and not a private msg
     if ircmsg.find('PRIVMSG #tihlde-drift') != -1:
@@ -164,9 +166,14 @@ while 1:
                 print('Device unplugged or wrong device used')
 
     # if this message is a name-list
-    if ircmsg.find(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :') != -1:
+    filterString = ':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'
+    if ircmsg.find(filterString) != -1:
+        nameString = ircmsg[len(filterString):ircmsg.find(
+            ':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')]
         nameString = ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :')
         nameString = nameString.strip('\r\n:leguin.freenode.net')
+        print('NAMESTRING')
+        print(nameString)
         if nameString.find('hal-9001') != -1:
             updateMods(nameString)
 
