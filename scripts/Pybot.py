@@ -20,18 +20,15 @@ password = open('pw').read()
 mods = []
 
 
-def requestNames():
-    send('NAMES [#tihlde-drift]')
-
-
 def updateMods(names):
-    print(names)
+    print('MSG BEFORE SPLIT' + names)
     nameList = names.split(' ')
-    print(nameList)
+    print('MSG AFTER SPLIT' + nameList)
     mods[:] = []
     for name in names:
         if name.find('@') != -1:
             mods.append(name)
+    print('MOD-LIST: ' + mods)
 
 
 def getStatus(hostname):
@@ -59,7 +56,6 @@ statuses = {
 
 
 def send(msg):
-    print(msg)
     ircsock.send(msg + '\r\n')
 
 
@@ -105,13 +101,15 @@ def warnIfDown():
 
 
 def findName(ircmsg):
-    name = ircmsg[1:ircmsg.find('!')]
-    print('findName: ' + name)
-    return name
+    return ircmsg[1:ircmsg.find('!')]
 
 
 def isMod(name):
     return ('@' + name) in mods
+
+
+def requestNames():
+    send('NAMES [#tihlde-drift]')
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
