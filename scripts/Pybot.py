@@ -17,6 +17,21 @@ server = 'irc.freenode.net'
 channel = '#tihlde-drift'
 botnick = 'hal-9001'
 password = open('pw').read()
+mods = []
+
+
+def requestNames():
+    send('NAMES [#tihlde-drift]')
+
+
+def updateMods(names):
+    print(names)
+    nameList = names.split(' ')
+    print(nameList)
+    mods[:] = []
+    for name in names:
+        if name.find('@') != -1:
+            mods.append(name)
 
 
 def getStatus(hostname):
@@ -89,6 +104,16 @@ def warnIfDown():
         sendText(msg)
 
 
+def findName(ircmsg):
+    name = ircmsg[1:ircmsg.find('!')]
+    print('findName: ' + name)
+    return name
+
+
+def isMod(name):
+    return ('@' + name) in mods
+
+
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((server, 6667))
 send('USER ' + botnick + ' ' + botnick + ' ' + server + ' : pybot')
@@ -115,21 +140,28 @@ while 1:
         if nerdvanaStatus:  # Respond to .nerdvanastatus
             sendNerdvanaStatuses()
 
-        if ircmsg.find('.discodeactivate') != -1:
-            discoActive = False
-            sendText("Discotime deactivated")
-        elif ircmsg.find('.discoreactivate') != -1:
-            discoActive = True
-            sendText("Discotime reactivated")
+        if ircmsg.find('.updatemods') != -1:
+            requestNames()
 
-        try:
-            if discoActive and ircmsg.find('.discotime') != -1:
-                print('Discotime!')
-                ser.write(b'1')
-            else:
-                ser.write(b'0')
-        except serial.serialutil.SerialException:
-            print('Device unplugged or wrong device used')
+        if isMod(findName(ircmsg)):  # if sender is a mod
+            if ircmsg.find('.discodeactivate') != -1:
+                discoActive = False
+                sendText('Discotime deactivated')
+            elif ircmsg.find('.discoreactivate') != -1:
+                discoActive = True
+                sendText('Discotime reactivated')
+            try:
+                if discoActive and ircmsg.find('.discotime') != -1:
+                    print('Discotime!')
+                    ser.write(b'1')
+                else:
+                    ser.write(b'0')
+            except serial.serialutil.SerialException:
+                print('Device unplugged or wrong device used')
+
+    # if this message is a name-list
+    if ircmsg.find(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :') != -1:
+        updateMods(ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'))
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
