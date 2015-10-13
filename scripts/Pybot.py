@@ -54,21 +54,21 @@ def sendText(chan, msg):
 
 def sendServerStatuses():
     sendText(channel, 'colargol: ' + statuses['colargol'] +
-            '  fantorangen: ' + statuses['fantorangen'] +
-            '  odin: ' + statuses['odin'] +
-            '  coastguard: ' + statuses['coastguard'] +
-            '  handymanny: ' + statuses['handymanny'] +
-            '  balthazar: ' + statuses['balthazar'] +
-            '  thor: ' + statuses['thor'])
+             '  fantorangen: ' + statuses['fantorangen'] +
+             '  odin: ' + statuses['odin'] +
+             '  coastguard: ' + statuses['coastguard'] +
+             '  handymanny: ' + statuses['handymanny'] +
+             '  balthazar: ' + statuses['balthazar'] +
+             '  thor: ' + statuses['thor'])
 
 
 def sendNerdvanaStatuses():
     sendText(channel, 'vcenter: ' + statuses['vcenter.nerdvana'] +
-            '  bashful: ' + statuses['bashful.nerdvana'] +
-            '  grumpy: ' + statuses['grumpy.nerdvana'] +
-            '  dopey: ' + statuses['dopey.nerdvana'] +
-            '  sleepy: ' + statuses['sleepy.nerdvana'] +
-            '  sneezy: ' + statuses['sneezy.nerdvana'])
+             '  bashful: ' + statuses['bashful.nerdvana'] +
+             '  grumpy: ' + statuses['grumpy.nerdvana'] +
+             '  dopey: ' + statuses['dopey.nerdvana'] +
+             '  sleepy: ' + statuses['sleepy.nerdvana'] +
+             '  sneezy: ' + statuses['sneezy.nerdvana'])
 
 
 def updateStatuses():
@@ -94,7 +94,7 @@ ircsock.connect((server, 6667))
 send('USER ' + botnick + ' ' + botnick + ' ' + server + ' : pybot')
 send('NICK ' + botnick)
 
-send('JOIN ' + channel + ' ' + password) # join channel
+send('JOIN ' + channel + ' ' + password)  # join channel
 
 while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
@@ -116,12 +116,12 @@ while 1:
         if nerdvanaStatus:  # Respond to .nerdvanastatus
             sendNerdvanaStatuses()
 
-        if ircmsg.find('.discoDeactivate') != -1:
+        if ircmsg.find('.discodeactivate') != -1:
             discoActive = False
-        elif ircmsg.find('.discoActivate') != -1:
+        elif ircmsg.find('.discoreactivate') != -1:
             discoActive = True
 
-        if ircmsg.find('.discotime!') != -1 and discoActive:
+        if ircmsg.find('.discotime') != -1 and discoActive:
             print('Discotime!')
             ser.write(b'1')
         else:
