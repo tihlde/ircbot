@@ -175,8 +175,7 @@ while 1:
         nameString = nameString.strip('\r\n:leguin.freenode.net')
         print('NAMESTRING')
         print(nameString)
-        if nameString.find('hal-9001') != -1:
-            updateMods(nameString)
+        updateMods(nameString)
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
