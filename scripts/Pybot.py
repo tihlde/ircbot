@@ -129,8 +129,8 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
-    if(len(ircmsg) > 0):
-        print('MESSAGE')
+    if len(ircmsg) > 0:
+        print('RECEIVED')
         print(ircmsg)  # print received message
 
     # Make sure the message is in specified channel and not a private msg
@@ -167,7 +167,8 @@ while 1:
 
     # if this message is a name-list
     filterString = ':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'
-    if ircmsg.find(filterString) != -1:
+    if ircmsg.find(filterString) != -1 and ircmsg.find(
+            ':leguin.freenode.net 333 hal-9001 #tihlde-drift') == -1:
         nameString = ircmsg[len(filterString):ircmsg.find(
             ':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')]
         nameString = ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :')
