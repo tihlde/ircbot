@@ -167,7 +167,7 @@ while 1:
                     if discoTime > maxDiscoTime:
                         discoTime = maxDiscoTime
                     print('Discotime for ' + str(discoTime) + '!')
-                    ser.write(str.encode(discoTime))
+                    ser.write(str.encode(str(discoTime)))
                 else:
                     ser.write(b'0')
             except serial.serialutil.SerialException:
