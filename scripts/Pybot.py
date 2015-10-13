@@ -21,14 +21,17 @@ mods = []
 
 
 def updateMods(names):
-    print('MSG BEFORE SPLIT' + names)
+    print('MSG BEFORE SPLIT')
+    print(names)
     nameList = names.split(' ')
-    print('MSG AFTER SPLIT' + nameList)
+    print('MSG AFTER SPLIT')
+    print(nameList)
     mods[:] = []
     for name in names:
         if name.find('@') != -1:
             mods.append(name)
-    print('MOD-LIST: ' + mods)
+    print('MOD-LIST')
+    print(mods)
 
 
 def getStatus(hostname):
