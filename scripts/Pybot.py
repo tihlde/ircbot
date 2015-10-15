@@ -110,13 +110,13 @@ def sendNerdvanaStatuses():
 
 
 def updateStatuses():
-    t = threading.Thread(target=threadPings, args=(newStatuses))
+    t = threading.Thread(target=threadPings, args=())
     t.daemon = True
     t.start()
 
 
-def threadPings(statusDict):
-    for key in statusDict:
+def threadPings():
+    for key in newStatuses:
         newStatuses[key] = getStatus(key)
 
 
