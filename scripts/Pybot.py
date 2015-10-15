@@ -4,6 +4,7 @@ __author__ = 'Harald'
 import socket
 import time
 import os
+import threading
 
 import serial
 
@@ -39,13 +40,13 @@ def updateMods(names):
 
 
 def getStatus(hostname):
-    if os.system('ping -c 1 ' + hostname + '.tihlde.org') == 0:
+    if os.system('ping -c 1 -i 0.2 ' + hostname + '.tihlde.org') == 0:
         return '\x033,1oppe\x03'
     else:
         return '\x030,4NEDE\x03'
 
 
-statuses = {
+newStatuses = {
     'colargol': getStatus('colargol'),
     'fantorangen': getStatus('fantorangen'),
     'odin': getStatus('odin'),
@@ -61,6 +62,22 @@ statuses = {
     'sleepy.nerdvana': getStatus('sleepy.nerdvana')
 }
 
+oldStatuses = {
+    'colargol': newStatuses['colargol'],
+    'fantorangen': newStatuses['fantorangen'],
+    'odin': newStatuses['odin'],
+    'coastguard': newStatuses['coastguard'],
+    'handymanny': newStatuses['handymanny'],
+    'balthazar': newStatuses['balthazar'],
+    'thor': newStatuses['thor'],
+    'vcenter.nerdvana': newStatuses['vcenter.nerdvana'],
+    'bashful.nerdvana': newStatuses['bashful.nerdvana'],
+    'dopey.nerdvana': newStatuses['dopey.nerdvana'],
+    'grumpy.nerdvana': newStatuses['grumpy.nerdvana'],
+    'sneezy.nerdvana': newStatuses['sneezy.nerdvana'],
+    'sleepy.nerdvana': newStatuses['sleepy.nerdvana']
+}
+
 
 def send(msg):
     msg += '\r\n'
@@ -74,44 +91,54 @@ def sendText(msg):
 
 
 def sendServerStatuses():
-    sendText('colargol: ' + statuses['colargol'] +
-             '  fantorangen: ' + statuses['fantorangen'] +
-             '  odin: ' + statuses['odin'] +
-             '  coastguard: ' + statuses['coastguard'] +
-             '  handymanny: ' + statuses['handymanny'] +
-             '  balthazar: ' + statuses['balthazar'] +
-             '  thor: ' + statuses['thor'])
+    sendText('colargol: ' + oldStatuses['colargol'] +
+             '  fantorangen: ' + oldStatuses['fantorangen'] +
+             '  odin: ' + oldStatuses['odin'] +
+             '  coastguard: ' + oldStatuses['coastguard'] +
+             '  handymanny: ' + oldStatuses['handymanny'] +
+             '  balthazar: ' + oldStatuses['balthazar'] +
+             '  thor: ' + oldStatuses['thor'])
 
 
 def sendNerdvanaStatuses():
-    sendText('vcenter: ' + statuses['vcenter.nerdvana'] +
-             '  bashful: ' + statuses['bashful.nerdvana'] +
-             '  grumpy: ' + statuses['grumpy.nerdvana'] +
-             '  dopey: ' + statuses['dopey.nerdvana'] +
-             '  sleepy: ' + statuses['sleepy.nerdvana'] +
-             '  sneezy: ' + statuses['sneezy.nerdvana'])
+    sendText('vcenter: ' + oldStatuses['vcenter.nerdvana'] +
+             '  bashful: ' + oldStatuses['bashful.nerdvana'] +
+             '  grumpy: ' + oldStatuses['grumpy.nerdvana'] +
+             '  dopey: ' + oldStatuses['dopey.nerdvana'] +
+             '  sleepy: ' + oldStatuses['sleepy.nerdvana'] +
+             '  sneezy: ' + oldStatuses['sneezy.nerdvana'])
 
 
 def updateStatuses():
+    t = threading.Thread(target=threadPings, args=(newStatuses))
+    t.daemon = True
+    t.start()
+
+
+def threadPings(statusDict):
+    for key in statusDict:
+        newStatuses[key] = getStatus(key)
+
+
+def minuteWarning():
     msg = ''
-    for key in statuses:
-        oldStatus = statuses[key]
-        newStatus = getStatus(key)
-        statuses[key] = newStatus
-        if oldStatus != newStatus:
-            msg += key + ' er nå ' + newStatus + '  '
+    for key in newStatuses:
+        newStat = newStatuses[key]
+        if newStat != oldStatuses[key]:
+            oldStatuses[key] = newStat
+            msg += key[:key.find('.')] + ' er nå ' + newStat + '  '
     if len(msg) > 0:
         if msg.find('NEDE') != -1:
-            msg += ' '
+            msg += ';'
             for name in mods:
                 msg += ' ' + name[1:]
         sendText('Statusendringer: ' + msg)
 
 
-def warnIfDown():
+def midnightReminder():
     msg = ''
-    for key in statuses:
-        if statuses[key].find('NEDE') != -1:
+    for key in oldStatuses:
+        if oldStatuses[key].find('NEDE') != -1:
             if key.find('.') == -1:
                 serverName = key
             else:
@@ -187,7 +214,6 @@ while 1:
     isNameMsg = ircmsg.find(filterString) != -1
     isNotJoinMsg = ircmsg.find(':leguin.freenode.net 333 hal-9001 #tihlde-drift') == -1
     if isNameMsg and isNotJoinMsg:
-
         nsStart = len(filterString)
         nsEnd = ircmsg.find(':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')
         nameString = ircmsg[nsStart:nsEnd]
@@ -203,10 +229,10 @@ while 1:
     minute = time.strftime('%M')
     if minute != updateMinute:
         updateStatuses()
+        minuteWarning()
         updateMinute = minute
 
     day = time.strftime('%d')
     if day != updateDay:
-        updateStatuses()
-        warnIfDown()
+        midnightReminder()
         updateDay = day
