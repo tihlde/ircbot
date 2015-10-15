@@ -3,7 +3,7 @@ int p1 = 3;
 int p2 = 4;
 int p3 = 5;
 
-int count = 0;
+unsigned long count = 0;
 
 void setup() {
   pinMode(p1, OUTPUT);
