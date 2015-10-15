@@ -32,7 +32,9 @@ def updateMods(names):
     print(nameList)
     mods[:] = []
     for name in nameList:
-        if name.find('@') != -1:
+        if name.find('@') != -1 and name.find('ChanServ') == -1:
+            if name.find('\r\n:leguin.freenode.net') != -1:
+                name = name.strip('\r\n:leguin.freenode.net')
             mods.append(name)
     print('MOD-LIST')
     print(mods)
