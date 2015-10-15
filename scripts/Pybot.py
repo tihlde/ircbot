@@ -33,8 +33,6 @@ def updateMods(names):
     mods[:] = []
     for name in nameList:
         if name.find('@') != -1 and name.find('ChanServ') == -1:
-            if name.find('\r\n:leguin.freenode.net') != -1:
-                name = name.strip('\r\n:leguin.freenode.net')
             mods.append(name)
     print('MOD-LIST')
     print(mods)
@@ -186,13 +184,15 @@ while 1:
 
     filterString = ':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'
     # if this message is a name-list
-    if ircmsg.find(filterString) != -1 and ircmsg.find(
-            ':leguin.freenode.net 333 hal-9001 #tihlde-drift') == -1:
-        nameString = ircmsg.strip(filterString)
-        nameString = ircmsg[:ircmsg.find(
-            ':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')]
-        nameString = ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :')
-        nameString = nameString.strip('\r\n:leguin.freenode.net')
+    isNameMsg = ircmsg.find(filterString) != -1
+    isNotJoinMsg = ircmsg.find(':leguin.freenode.net 333 hal-9001 #tihlde-drift') == -1
+    if isNameMsg and isNotJoinMsg:
+
+        nsStart = len(filterString)
+        nsEnd = ircmsg.find(':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')
+        nameString = ircmsg[nsStart:nsEnd]
+
+        nameString = nameString.replace('\r\n:leguin.freenode.net', '')
         print('NAMESTRING')
         print(nameString)
         updateMods(nameString)
