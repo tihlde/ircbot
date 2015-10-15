@@ -1,4 +1,5 @@
-int wait = 10;
+unsigned long wait = 10;
+unsigned long invLoopScale = 6UL * wait;
 int p1 = 3;
 int p2 = 4;
 int p3 = 5;
@@ -19,15 +20,15 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
   if(Serial.available()) {
-    int dTime = Serial.parseInt();
+    unsigned long dTime = Serial.parseInt();
     if(dTime > 0) {
-      count = (dTime * 1000) / (6 * wait);
+      count = (dTime * 1000UL) / invLoopScale;
     } else {
       return;
     }
     
     digitalWrite(13, HIGH);
-    for(int i = 0; i < count; i++) {
+    for(unsigned long l = 0; l < count; l++) {
       digitalWrite(p1, 1);
       digitalWrite(p2, 1);
       digitalWrite(p3, 0);
