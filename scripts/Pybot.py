@@ -193,10 +193,13 @@ while 1:
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
 
-    if time.strftime('%M') != updateMinute:
+    minute = time.strftime('%M')
+    if minute != updateMinute:
         updateStatuses()
+        updateMinute = minute
 
-    if time.strftime('%d') != updateDay:
+    day = time.strftime('%d')
+    if day != updateDay:
         updateStatuses()
         warnIfDown()
-        updateDay = time.strftime('%d')
+        updateDay = day
