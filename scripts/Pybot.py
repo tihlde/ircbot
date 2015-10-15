@@ -128,7 +128,7 @@ def minuteWarning():
             oldStatuses[key] = newStat
             serverName = key
             if key.find('nerdvana') != -1:
-                serverName = key[:key.find('.') + 1]
+                serverName = key[:key.find('.')]
             msg += serverName + ' er nå ' + newStat + '  '
     if len(msg) > 0:
         if msg.find('NEDE') != -1:
