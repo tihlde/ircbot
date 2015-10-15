@@ -103,7 +103,11 @@ def updateStatuses():
         if oldStatus != newStatus:
             msg += key + ' er nå ' + newStatus + '  '
     if len(msg) > 0:
-        sendText('Endringer i status siste minutt: ' + msg)
+        if msg.find('NEDE') != -1:
+            msg += ' '
+            for name in mods:
+                msg += ' ' + name[1:]
+        sendText('Statusendringer: ' + msg)
 
 
 def warnIfDown():
@@ -180,11 +184,12 @@ while 1:
             except serial.serialutil.SerialException:
                 print('Device unplugged or wrong device used')
 
-    # if this message is a name-list
     filterString = ':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'
+    # if this message is a name-list
     if ircmsg.find(filterString) != -1 and ircmsg.find(
             ':leguin.freenode.net 333 hal-9001 #tihlde-drift') == -1:
-        nameString = ircmsg[len(filterString):ircmsg.find(
+        nameString = ircmsg.strip(filterString)
+        nameString = ircmsg[:ircmsg.find(
             ':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')]
         nameString = ircmsg.strip(':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :')
         nameString = nameString.strip('\r\n:leguin.freenode.net')
