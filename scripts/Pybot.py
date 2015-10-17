@@ -132,9 +132,8 @@ def minuteWarning():
             msg += serverName + ' er nå ' + newStat + '  '
     if len(msg) > 0:
         if msg.find('NEDE') != -1:
-            msg += ';'
             for name in mods:
-                msg += ' ' + name[1:]
+                send('PRIVMSG ' + name + ' ' + msg)
         sendText('Statusendringer: ' + msg)
 
 
