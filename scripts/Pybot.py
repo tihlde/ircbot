@@ -173,6 +173,9 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
+    if ircmsg.find('.freenode.net') != -1:
+        msgServer = ircmsg[1:ircmsg.find('.freenode.net')]
+
     if len(ircmsg) > 0:
         print('RECEIVED')
         print(ircmsg)  # print received message
@@ -211,16 +214,16 @@ while 1:
             except serial.serialutil.SerialException:
                 print('Device unplugged or wrong device used')
 
-    filterString = ':leguin.freenode.net 353 hal-9001 @ #tihlde-drift :'
-    # if this message is a name-list
+    filterString = ':' + msgServer + '.freenode.net 353 hal-9001 @ #tihlde-drift :'
+    # if this message is a name-list. .updatemods has just been called
     isNameMsg = ircmsg.find(filterString) != -1
-    isNotJoinMsg = ircmsg.find(':leguin.freenode.net 333 hal-9001 #tihlde-drift') == -1
+    isNotJoinMsg = ircmsg.find(':' + msgServer + '.freenode.net 333 hal-9001 #tihlde-drift') == -1
     if isNameMsg and isNotJoinMsg:
         nsStart = len(filterString)
-        nsEnd = ircmsg.find(':leguin.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')
+        nsEnd = ircmsg.find(':' + msgServer +'.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')
         nameString = ircmsg[nsStart:nsEnd]
 
-        nameString = nameString.replace('\r\n:leguin.freenode.net', '')
+        nameString = nameString.replace('\r\n:' + msgServer + '.freenode.net', '')
         print('NAMESTRING')
         print(nameString)
         updateMods(nameString)
