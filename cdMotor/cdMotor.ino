@@ -22,10 +22,11 @@ void loop() {
   if(Serial.available()) {
     unsigned long dTime = Serial.parseInt();
     if(dTime > 0) {
-      count = (dTime * 1000UL) / invLoopScale;
+      count = dTime / invLoopScale * 1000UL;
     } else {
       return;
     }
+    Serial.print(count);
     
     digitalWrite(13, HIGH);
     for(unsigned long l = 0; l < count; l++) {

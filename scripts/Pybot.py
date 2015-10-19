@@ -208,9 +208,8 @@ while 1:
                     if discoTime > maxDiscoTime:
                         discoTime = maxDiscoTime
                     print('Discotime for ' + str(discoTime) + '!')
-                    encodedVal = str.encode(str(discoTime))
-                    print('encoded value: ' + encodedVal.decode())
-                    ser.write(encodedVal)
+                    ser.write(str.encode(str(discoTime)))
+                    print(ser.read())
                 else:
                     ser.write(b'0')
             except serial.serialutil.SerialException:
