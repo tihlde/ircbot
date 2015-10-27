@@ -16,7 +16,7 @@ standardDiscoTime = 20
 updateMinute = time.strftime('%M')
 updateDay = time.strftime('%d')
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM1', 9600)
 
 server = 'irc.freenode.net'
 channel = '#tihlde-drift'
