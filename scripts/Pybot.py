@@ -55,7 +55,6 @@ newStatuses = {
     'balthazar': getStatus('balthazar'),
     'thor': getStatus('thor'),
     'vcenter.nerdvana': getStatus('vcenter.nerdvana'),
-    'bashful.nerdvana': getStatus('bashful.nerdvana'),
     'dopey.nerdvana': getStatus('dopey.nerdvana'),
     'grumpy.nerdvana': getStatus('grumpy.nerdvana'),
     'sneezy.nerdvana': getStatus('sneezy.nerdvana'),
@@ -71,7 +70,6 @@ oldStatuses = {
     'balthazar': newStatuses['balthazar'],
     'thor': newStatuses['thor'],
     'vcenter.nerdvana': newStatuses['vcenter.nerdvana'],
-    'bashful.nerdvana': newStatuses['bashful.nerdvana'],
     'dopey.nerdvana': newStatuses['dopey.nerdvana'],
     'grumpy.nerdvana': newStatuses['grumpy.nerdvana'],
     'sneezy.nerdvana': newStatuses['sneezy.nerdvana'],
@@ -102,7 +100,6 @@ def sendServerStatuses():
 
 def sendNerdvanaStatuses():
     sendText('vcenter: ' + oldStatuses['vcenter.nerdvana'] +
-             '  bashful: ' + oldStatuses['bashful.nerdvana'] +
              '  grumpy: ' + oldStatuses['grumpy.nerdvana'] +
              '  dopey: ' + oldStatuses['dopey.nerdvana'] +
              '  sleepy: ' + oldStatuses['sleepy.nerdvana'] +

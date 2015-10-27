@@ -26,7 +26,7 @@ void loop() {
     } else {
       return;
     }
-    Serial.print(count);
+    Serial.write(count);
     
     digitalWrite(13, HIGH);
     for(unsigned long l = 0; l < count; l++) {
