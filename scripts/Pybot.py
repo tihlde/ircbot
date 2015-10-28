@@ -5,6 +5,7 @@ import socket
 import time
 import os
 import threading
+import copy
 
 import serial
 
@@ -61,20 +62,7 @@ newStatuses = {
     'sleepy.nerdvana': getStatus('sleepy.nerdvana')
 }
 
-oldStatuses = {
-    'colargol': newStatuses['colargol'],
-    'fantorangen': newStatuses['fantorangen'],
-    'odin': newStatuses['odin'],
-    'coastguard': newStatuses['coastguard'],
-    'handymanny': newStatuses['handymanny'],
-    'balthazar': newStatuses['balthazar'],
-    'thor': newStatuses['thor'],
-    'vcenter.nerdvana': newStatuses['vcenter.nerdvana'],
-    'dopey.nerdvana': newStatuses['dopey.nerdvana'],
-    'grumpy.nerdvana': newStatuses['grumpy.nerdvana'],
-    'sneezy.nerdvana': newStatuses['sneezy.nerdvana'],
-    'sleepy.nerdvana': newStatuses['sleepy.nerdvana']
-}
+oldStatuses = copy.deepcopy(newStatuses)
 
 
 def send(msg):
