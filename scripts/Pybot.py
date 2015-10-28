@@ -47,21 +47,20 @@ def getStatus(hostname):
         return '\x030,4NEDE\x03'
 
 
-newStatuses = {
-    'colargol': getStatus('colargol'),
-    'fantorangen': getStatus('fantorangen'),
-    'odin': getStatus('odin'),
-    'coastguard': getStatus('coastguard'),
-    'handymanny': getStatus('handymanny'),
-    'balthazar': getStatus('balthazar'),
-    'thor': getStatus('thor'),
-    'vcenter.nerdvana': getStatus('vcenter.nerdvana'),
-    'dopey.nerdvana': getStatus('dopey.nerdvana'),
-    'grumpy.nerdvana': getStatus('grumpy.nerdvana'),
-    'sneezy.nerdvana': getStatus('sneezy.nerdvana'),
-    'sleepy.nerdvana': getStatus('sleepy.nerdvana')
-}
+newStatuses = [[]]
 
+
+def readServers():
+    with open('servers') as file:
+        for line in file:
+            if line.find('#') != -1:
+                continue
+            data = line.split(',')
+            newStatuses.append(data)
+            print(data)
+
+
+readServers()
 oldStatuses = copy.deepcopy(newStatuses)
 
 
@@ -206,7 +205,8 @@ while 1:
     isNotJoinMsg = ircmsg.find(':' + msgServer + '.freenode.net 333 hal-9001 #tihlde-drift') == -1
     if isNameMsg and isNotJoinMsg:
         nsStart = len(filterString)
-        nsEnd = ircmsg.find(':' + msgServer +'.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')
+        nsEnd = ircmsg.find(
+            ':' + msgServer + '.freenode.net 366 hal-9001 #tihlde-drift :End of /NAMES list.')
         nameString = ircmsg[nsStart:nsEnd]
 
         nameString = nameString.replace('\r\n:' + msgServer + '.freenode.net', '')
