@@ -55,9 +55,13 @@ def readServers():
         for line in file:
             if line.find('#') != -1:
                 continue
-            data = line.split(',')
-            newStatuses.append(data)
+            data = line[:line.find('[')].split(',')
+            print("Data")
             print(data)
+            data.append(line[line.find('[') + 1:len(line) - 1].split(','))
+            print("Data with users")
+            print(data)
+            newStatuses.append(data)
 
 
 readServers()
@@ -106,19 +110,15 @@ def threadPings():
 
 def minuteWarning():
     msg = ''
-    for key in newStatuses:
-        newStat = newStatuses[key]
-        if newStat != oldStatuses[key]:
-            oldStatuses[key] = newStat
-            serverName = key
-            if key.find('nerdvana') != -1:
-                serverName = key[:key.find('.')]
-            msg += serverName + ' er nå ' + newStat + '  '
-    if len(msg) > 0:
-        if msg.find('NEDE') != -1:
-            for name in mods:
-                send('PRIVMSG ' + name + ' ' + msg)
-        sendText('Statusendringer: ' + msg)
+    for i in range(len(newStatuses)):
+        newStatus = newStatuses[i]
+        oldStatus = oldStatuses[i]
+        if newStatus[0] != oldStatus[0]: # status has changed
+            oldStatus[0] = newStatus[0]
+            msg += newStatus[2] + ' er nå ' + newStatus[0] + '  '
+        if len(msg) > 0:
+            for name in newStatus[3]:
+                send('PRIVMSG ' + name + ' :' + msg)
 
 
 def midnightReminder():
