@@ -5,7 +5,7 @@ import socket
 import time
 import os
 import threading
-import copy
+import atexit
 
 import serial
 
@@ -47,25 +47,26 @@ def getStatus(hostname):
         return '\x030,4NEDE\x03'
 
 
+# read config
 newStatuses = [[]]
+with open('servers') as file:
+    for line in file:
+        if line.find('#') != -1:
+            continue
+        data = line[:line.find('[')].split(',')
+        print("Data")
+        print(data)
+        info = line[line.find('[') + 1:len(line) - 1].split(',')
+        data.append(getStatus(info[0]))
+        data.append(info)
+        print("Data with users")
+        print(data)
+        newStatuses.append(data)
 
-
-def readConfig():
-    with open('servers') as file:
-        for line in file:
-            if line.find('#') != -1:
-                continue
-            data = line[:line.find('[')].split(',')
-            print("Data")
-            print(data)
-            data.append(line[line.find('[') + 1:len(line) - 1].split(','))
-            print("Data with users")
-            print(data)
-            newStatuses.append(data)
-
-
-readConfig()
-oldStatuses = copy.deepcopy(newStatuses)
+# create oldStatuses dict
+oldStatuses = {}
+for status in newStatuses:
+    oldStatuses[status[1]] = status[0]
 
 
 def send(msg):
@@ -237,3 +238,18 @@ while 1:
     if day != updateDay:
         midnightReminder()
         updateDay = day
+
+
+@atexit.register
+def exitBot():
+    print('Shutting down bot...')
+    saveConfig()
+    print('Config saved')
+    send('PART ' + channel)
+    print('Channel left')
+    send('QUIT')
+    print('Quit server')
+    ircsock.close()
+    print('Socket closed')
+    print('*** Shutdown complete ***')
+
