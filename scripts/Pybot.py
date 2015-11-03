@@ -50,7 +50,7 @@ def getStatus(hostname):
 newStatuses = [[]]
 
 
-def readServers():
+def readConfig():
     with open('servers') as file:
         for line in file:
             if line.find('#') != -1:
@@ -64,7 +64,7 @@ def readServers():
             newStatuses.append(data)
 
 
-readServers()
+readConfig()
 oldStatuses = copy.deepcopy(newStatuses)
 
 
@@ -113,11 +113,11 @@ def minuteWarning():
     for i in range(len(newStatuses)):
         newStatus = newStatuses[i]
         oldStatus = oldStatuses[i]
-        if newStatus[0] != oldStatus[0]: # status has changed
+        if newStatus[0] != oldStatus[0]:  # status has changed
             oldStatus[0] = newStatus[0]
             msg += newStatus[2] + ' er nå ' + newStatus[0] + '  '
         if len(msg) > 0:
-            for name in newStatus[3]:
+            for name in newStatus[4]:
                 send('PRIVMSG ' + name + ' :' + msg)
 
 
@@ -132,6 +132,16 @@ def midnightReminder():
             msg += serverName + ' \x030,4ER NEDE\x03  '
     if len(msg) > 0:
         sendText('Påminnelse ved midnatt: ' + msg)
+
+
+def saveConfig():
+    file = open("servers", "w")
+    for status in newStatuses:
+        str = status[1] + ',' + status[2] + ',' + status[3] + ',['
+        for name in status[4]:
+            str += name + ','
+        str = str[:-1] + ']'
+        file.write(str + '\n')
 
 
 def findName(ircmsg):
