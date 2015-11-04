@@ -48,25 +48,41 @@ def getStatus(hostname):
 
 
 # read config
-newStatuses = [[]]
-with open('servers') as file:
+config = {}
+with open('config', 'r') as file:
     for line in file:
-        if line.find('#') != -1:
+        if line.find('#') == 0:
             continue
-        data = line[:line.find('[')].split(',')
-        print("Data")
+        data = [x.strip() for x in line.split(',')]
+        print("DATA")
         print(data)
-        info = line[line.find('[') + 1:len(line) - 1].split(',')
-        data.append(getStatus(info[0]))
-        data.append(info)
-        print("Data with users")
-        print(data)
-        newStatuses.append(data)
+        print('')
+        config[data[0]] = data
 
-# create oldStatuses dict
+
+groups = {}
+# read groups
+with open('groups', 'r') as file:
+    for line in file:
+        if line.find('#') == 0:
+            continue
+        split = line.find(':')
+        groupName = line[:split]
+        groupMembers = [x.strip() for x in line[split + 1:].split(',')]
+        print('GROUP')
+        print(groupName)
+        print(groupMembers)
+        print()
+        groups[groupName] = groupMembers
+
+# create dicts
+newStatuses = {}
 oldStatuses = {}
-for status in newStatuses:
-    oldStatuses[status[1]] = status[0]
+for server in config:
+    host = server[0]
+    status = getStatus(host)
+    newStatuses[host] = status
+    oldStatuses[host] = status
 
 
 def send(msg):
@@ -136,7 +152,7 @@ def midnightReminder():
 
 
 def saveConfig():
-    file = open("servers", "w")
+    file = open("config", "w")
     for status in newStatuses:
         str = status[1] + ',' + status[2] + ',' + status[3] + ',['
         for name in status[4]:
