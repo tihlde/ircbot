@@ -17,6 +17,9 @@ standardDiscoTime = 20
 updateMinute = time.strftime('%M')
 updateDay = time.strftime('%d')
 
+upStatus = '\x033,1oppe\x03'
+downStatus = '\x030,4NEDE\x03'
+
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
 server = 'irc.freenode.net'
@@ -42,9 +45,9 @@ def updateMods(names):
 
 def getStatus(hostname):
     if os.system('ping -c 1 -i 0.2 ' + hostname + '.tihlde.org') == 0:
-        return '\x033,1oppe\x03'
+        return upStatus
     else:
-        return '\x030,4NEDE\x03'
+        return downStatus
 
 
 # read config
@@ -92,26 +95,16 @@ def send(msg):
     ircsock.send(msg)
 
 
-def sendText(msg):
-    send('PRIVMSG ' + channel + ' :' + msg)
+def sendText(msg, rec):
+    send('PRIVMSG ' + rec + ' :' + msg)
 
 
-def sendServerStatuses():
-    sendText('colargol: ' + oldStatuses['colargol'] +
-             '  fantorangen: ' + oldStatuses['fantorangen'] +
-             '  odin: ' + oldStatuses['odin'] +
-             '  coastguard: ' + oldStatuses['coastguard'] +
-             '  handymanny: ' + oldStatuses['handymanny'] +
-             '  balthazar: ' + oldStatuses['balthazar'] +
-             '  thor: ' + oldStatuses['thor'])
-
-
-def sendNerdvanaStatuses():
-    sendText('vcenter: ' + oldStatuses['vcenter.nerdvana'] +
-             '  grumpy: ' + oldStatuses['grumpy.nerdvana'] +
-             '  dopey: ' + oldStatuses['dopey.nerdvana'] +
-             '  sleepy: ' + oldStatuses['sleepy.nerdvana'] +
-             '  sneezy: ' + oldStatuses['sneezy.nerdvana'])
+def sendServerStatus(statusGroup, nick):
+    msg = ''
+    for host, value in config.items():
+        if config[3].find(statusGroup) != -1:
+            msg += value[1] + ' ' + newStatuses[host] + '  '
+    sendText(msg, nick)
 
 
 def updateStatuses():
@@ -141,12 +134,12 @@ def minuteWarning():
 def midnightReminder():
     msg = ''
     for key in oldStatuses:
-        if oldStatuses[key].find('NEDE') != -1:
+        if oldStatuses[key].find(downStatus) != -1:
             if key.find('.') == -1:
                 serverName = key
             else:
                 serverName = key[:key.find('.')]
-            msg += serverName + ' \x030,4ER NEDE\x03  '
+            msg += serverName + ' ' + downStatus + '  '
     if len(msg) > 0:
         sendText('Påminnelse ved midnatt: ' + msg)
 
@@ -184,6 +177,8 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
+    sender = findName(ircmsg)
+
     if ircmsg.find('.freenode.net') != -1:
         msgServer = ircmsg[1:ircmsg.find('.freenode.net')]
 
@@ -191,19 +186,18 @@ while 1:
         print('RECEIVED')
         print(ircmsg)  # print received message
 
+
+    statusIndex = ircmsg.find('.status(')
+    if statusIndex != -1:  # Respond to .serverstatus
+        sendServerStatus(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')], sender)
+
     # Make sure the message is in specified channel and not a private msg
-    if ircmsg.find('PRIVMSG #tihlde-drift') != -1:
-
-        if ircmsg.find('.serverstatus') != -1:  # Respond to .serverstatus
-            sendServerStatuses()
-
-        if ircmsg.find('.nerdvanastatus') != -1:  # Respond to .nerdvanastatus
-            sendNerdvanaStatuses()
+    if ircmsg.find('PRIVMSG ' + channel) != -1:
 
         if ircmsg.find('.updatemods') != -1:  # respond to .updatemods
             requestNames()
 
-        if isMod(findName(ircmsg)):  # if sender is a mod
+        if isMod(sender):  # if sender is a mod
             if ircmsg.find('.discodeactivate') != -1:
                 discoActive = False
                 sendText('Discotime deactivated')
