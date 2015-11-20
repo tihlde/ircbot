@@ -115,8 +115,8 @@ def threadpings():
 
 
 def minutewarning():
-    msg = ''
     for i in range(len(newStatuses)):
+        msg = ''
         newstatus = newStatuses[i]
         oldstatus = oldStatuses[i]
         if newstatus[0] != oldstatus[0]:  # status has changed
@@ -124,20 +124,18 @@ def minutewarning():
             msg += newstatus[2] + ' er nå ' + newstatus[0] + '  '
         if len(msg) > 0:
             for name in newstatus[4]:
-                send('PRIVMSG ' + name + ' face:' + msg)
+                sendtext(msg, name)
 
 
 def midnightreminder():
-    msg = ''
-    for key in oldStatuses:
-        if oldStatuses[key].find(downStatus) != -1:
-            if key.find('.') == -1:
-                servername = key
-            else:
-                servername = key[:key.find('.')]
-            msg += servername + ' ' + downStatus + '  '
-    if len(msg) > 0:
-        sendtext('Påminnelse ved midnatt: ' + msg)
+    for i in range(len(newStatuses)):
+        msg = ''
+        newstatus = newStatuses[i]
+        if newstatus[0].find(downStatus) != -1:  # status indicates it is down
+            msg += newstatus[2] + ' er ' + newstatus[0] + '  '
+        if len(msg) > 0:
+            for name in newstatus[4]:
+                sendtext(msg, name)
 
 
 def saveconfig():
