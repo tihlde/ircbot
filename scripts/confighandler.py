@@ -21,19 +21,28 @@ def readservers():
         for line in file:
             if line.find('#') == 0:
                 continue
-            data = [x.strip() for x in line.split(',')]
-            print("DATA")
-            print(data)
-            print('')
-            servers[data[0]] = data
+            split = line.find(':')
+            servername = line[:split]
+            data = [x.strip() for x in line[split + 1:].split(',')]
+            servers[servername] = data
     return servers
 
 
-def saveconfig(servers):
-    configfile = open("servers", "w")
-    for _status in servers:
-        newline = _status[1] + ',' + _status[2] + ',' + _status[3] + ',['
-        for name in _status[4]:
-            newline += name + ','
-        newline = newline[:-1] + ']'
+servers = readservers()
+groups = readgroups()
+
+
+def saveconfig():
+    configfile = open("config/servers", "w")
+    for host, serverdata in servers.items():
+        newline = host + ": "
+        for datapiece in serverdata:
+            newline += datapiece + ', '
+        newline = newline[:-2] + ']'
         configfile.write(newline + '\n')
+    configfile = open("config/groups", "w")
+    for groupname, groupmembers in groups.items():
+        newline = groupname + ": "
+        for member in groupmembers:
+            newline += member + ", "
+        configfile.write(newline[:-2] + '\n')

@@ -11,8 +11,6 @@ import confighandler as ch
 upStatus = '\x033,1oppe\x03'
 downStatus = '\x030,4NEDE\x03'
 
-servers = ch.readservers()
-groups = ch.readgroups()
 newStatuses = {}  # format: hostname, status
 oldStatuses = {}
 
@@ -24,17 +22,17 @@ def getstatus(hostname):
         return downStatus
 
 
-for server in servers:
-    status = getstatus(server[0])
-    newStatuses[server[0]] = status
-    oldStatuses[server[0]] = status
+for host, serverdata in ch.servers.items():
+    status = getstatus(host)
+    newStatuses[host] = status
+    oldStatuses[host] = status
 
 
 def sendserverstatus(statusgroup, nick):
     msg = ''
-    for host, value in servers.items():
-        if servers[3].find(statusgroup) != -1:
-            msg += value[1] + ' ' + newStatuses[host] + '  '
+    for host, value in ch.servers.items():
+        if ch.servers[2].find(statusgroup) != -1:
+            msg += host + ' ' + newStatuses[host] + '  '
     bot.sendtext(msg, nick)
 
 
@@ -93,6 +91,6 @@ def update():
 
 
 def savechanges():
-    ch.saveconfig(servers)
+    ch.saveconfig()
 
     # def parsemsg(msg):
