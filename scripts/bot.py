@@ -59,21 +59,20 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
-    sender = findname(ircmsg)
-
-    if ircmsg.find('.freenode.net') != -1:
-        msgServer = ircmsg[1:ircmsg.find('.freenode.net')]
-
     if len(ircmsg) > 0:
         print('RECEIVED')
         print(ircmsg)  # print received message
 
-    if ircmsg.find('.status(') != -1:  # Respond to .serverstatus
-        sh.sendserverstatus(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')], sender)
+    sender = findname(ircmsg)
+    recipient = sender
 
-    # Make sure the message is in specified channel and not a private msg
+    # If message is to channel
     if ircmsg.find('PRIVMSG ' + channel) != -1:
         dh.parsediscowish(ircmsg, sender)
+        recipient = channel
+
+    if ircmsg.find('.status(') != -1:  # Respond to .serverstatus
+        sh.sendserverstatus(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')], sender)
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
