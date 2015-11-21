@@ -59,6 +59,21 @@ send('NICK ' + botnick)
 
 send('JOIN ' + channel + ' ' + password)  # join channel
 
+
+@atexit.register
+def exitbot():
+    print('Shutting down bot...')
+    sh.savechanges()
+    print('Config saved')
+    send('PART ' + channel)
+    print('Channel left')
+    send('QUIT')
+    print('Server quit')
+    ircsock.close()
+    print('Socket closed')
+    print('*** Shutdown complete ***')
+
+
 while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
@@ -78,10 +93,8 @@ while 1:
 
     # Make sure the message is in specified channel and not a private msg
     if ircmsg.find('PRIVMSG ' + channel) != -1:
-
         if ircmsg.find('.updatemods') != -1:  # respond to .updatemods
             requestnames()
-
         if ismod(sender):  # if sender is a mod
             dh.parsediscowish(ircmsg)
 
@@ -108,17 +121,3 @@ while 1:
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
 
     sh.update()
-
-
-@atexit.register
-def exitbot():
-    print('Shutting down bot...')
-    sh.savechanges()
-    print('Config saved')
-    send('PART ' + channel)
-    print('Channel left')
-    send('QUIT')
-    print('Server quit')
-    ircsock.close()
-    print('Socket closed')
-    print('*** Shutdown complete ***')
