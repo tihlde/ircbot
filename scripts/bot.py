@@ -2,26 +2,13 @@
 __author__ = 'Harald'
 
 import socket
-import time
-import os
-import threading
 import atexit
 
-import serial
+import statushandler as sh
+import discohandler as dh
 
-discoActive = True
-maxDiscoTime = 3000
-standardDiscoTime = 20
 
-updateMinute = time.strftime('%M')
-updateDay = time.strftime('%d')
-
-upStatus = '\x033,1oppe\x03'
-downStatus = '\x030,4NEDE\x03'
-
-ser = serial.Serial('/dev/ttyACM0', 9600)
-
-server = 'irc.freenode.net'
+ircserver = 'irc.freenode.net'
 channel = '#tihlde-drift'
 botnick = 'hal-9001'
 password = open('pw').read()
@@ -42,48 +29,6 @@ def updatemods(names):
     print(mods)
 
 
-def getstatus(hostname):
-    if os.system('ping -c 1 -i 0.2 ' + hostname + '.tihlde.org') == 0:
-        return upStatus
-    else:
-        return downStatus
-
-# read config
-config = {}
-with open('config', 'r') as file:
-    for line in file:
-        if line.find('#') == 0:
-            continue
-        data = [x.strip() for x in line.split(',')]
-        print("DATA")
-        print(data)
-        print('')
-        config[data[0]] = data
-
-groups = {}
-# read groups
-with open('groups', 'r') as file:
-    for line in file:
-        if line.find('#') == 0:
-            continue
-        split = line.find(':')
-        groupName = line[:split]
-        groupMembers = [x.strip() for x in line[split + 1:].split(',')]
-        print('GROUP')
-        print(groupName)
-        print(groupMembers)
-        print()
-        groups[groupName] = groupMembers
-
-# create dicts
-newStatuses = {}
-oldStatuses = {}
-for server in config:
-    status = getstatus(server[0])
-    newStatuses[server[0]] = status
-    oldStatuses[server[0]] = status
-
-
 def send(msg):
     msg += '\r\n'
     print('SENDING')
@@ -93,59 +38,6 @@ def send(msg):
 
 def sendtext(msg, rec):
     send('PRIVMSG ' + rec + ' :' + msg)
-
-
-def sendserverstatus(statusgroup, nick):
-    msg = ''
-    for host, value in config.items():
-        if config[3].find(statusgroup) != -1:
-            msg += value[1] + ' ' + newStatuses[host] + '  '
-    sendtext(msg, nick)
-
-
-def updatestatuses():
-    t = threading.Thread(target=threadpings, args=())
-    t.daemon = True
-    t.start()
-
-
-def threadpings():
-    for key in newStatuses:
-        newStatuses[key] = getstatus(key)
-
-
-def minutewarning():
-    for i in range(len(newStatuses)):
-        msg = ''
-        newstatus = newStatuses[i]
-        oldstatus = oldStatuses[i]
-        if newstatus[0] != oldstatus[0]:  # status has changed
-            oldstatus[0] = newstatus[0]
-            msg += newstatus[2] + ' er nå ' + newstatus[0] + '  '
-        if len(msg) > 0:
-            for name in newstatus[4]:
-                sendtext(msg, name)
-
-
-def midnightreminder():
-    for i in range(len(newStatuses)):
-        msg = ''
-        newstatus = newStatuses[i]
-        if newstatus[0].find(downStatus) != -1:  # status indicates it is down
-            msg += newstatus[2] + ' er ' + newstatus[0] + '  '
-        if len(msg) > 0:
-            for name in newstatus[4]:
-                sendtext(msg, name)
-
-
-def saveconfig():
-    configfile = open("config", "w")
-    for _status in newStatuses:
-        newline = _status[1] + ',' + _status[2] + ',' + _status[3] + ',['
-        for name in _status[4]:
-            newline += name + ','
-        newline = newline[:-1] + ']'
-        configfile.write(newline + '\n')
 
 
 def findname(text):
@@ -161,8 +53,8 @@ def requestnames():
 
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ircsock.connect((server, 6667))
-send('USER ' + botnick + ' ' + botnick + ' ' + server + ' : pybot')
+ircsock.connect((ircserver, 6667))
+send('USER ' + botnick + ' ' + botnick + ' ' + ircserver + ' : pybot')
 send('NICK ' + botnick)
 
 send('JOIN ' + channel + ' ' + password)  # join channel
@@ -182,7 +74,7 @@ while 1:
 
     statusIndex = ircmsg.find('.status(')
     if statusIndex != -1:  # Respond to .serverstatus
-        sendserverstatus(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')], sender)
+        sh.sendserverstatus(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')], sender)
 
     # Make sure the message is in specified channel and not a private msg
     if ircmsg.find('PRIVMSG ' + channel) != -1:
@@ -191,28 +83,7 @@ while 1:
             requestnames()
 
         if ismod(sender):  # if sender is a mod
-            if ircmsg.find('.discodeactivate') != -1:
-                discoActive = False
-                sendtext('Discotime deactivated', channel)
-            elif ircmsg.find('.discoreactivate') != -1:
-                discoActive = True
-                sendtext('Discotime reactivated', channel)
-            try:
-                if discoActive and ircmsg.find('.discotime') != -1:
-                    try:
-                        discoTime = int(
-                            ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')])
-                    except ValueError:
-                        discoTime = standardDiscoTime
-                    if discoTime > maxDiscoTime:
-                        discoTime = maxDiscoTime
-                    print('Discotime for ' + str(discoTime) + '!')
-                    ser.write(str.encode(str(discoTime)))
-                    print(ser.read())
-                else:
-                    ser.write(b'0')
-            except serial.serialutil.SerialException:
-                print('Device unplugged or wrong device used')
+            dh.parsediscowish(ircmsg)
 
     filterString = ':' + msgServer \
                    + '.freenode.net 353 hal-9001 @ #tihlde-drift :'
@@ -236,27 +107,18 @@ while 1:
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
 
-    minute = time.strftime('%M')
-    if minute != updateMinute:
-        updatestatuses()
-        minutewarning()
-        updateMinute = minute
-
-    day = time.strftime('%d')
-    if day != updateDay:
-        midnightreminder()
-        updateDay = day
+    sh.update()
 
 
 @atexit.register
 def exitbot():
     print('Shutting down bot...')
-    saveconfig()
+    sh.savechanges()
     print('Config saved')
     send('PART ' + channel)
     print('Channel left')
     send('QUIT')
-    print('Quit server')
+    print('Server quit')
     ircsock.close()
     print('Socket closed')
     print('*** Shutdown complete ***')
