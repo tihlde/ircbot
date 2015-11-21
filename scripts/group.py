@@ -2,12 +2,14 @@ __author__ = 'Harald'
 
 
 class Group(object):
+    owner = ""
+    members = {}
     def __init__(self, owner, members):
         self.owner = owner
         self.members = members
 
     def __str__(self):
-        string = "Group: " + "owner=" + self.owner
+        string = "owner=" + self.owner
         for member in self.members:
             string += " " + member
         return string

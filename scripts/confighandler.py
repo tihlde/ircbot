@@ -1,5 +1,7 @@
 __author__ = 'Harald'
 
+from group import Group
+
 
 def readgroups():
     groups = {}
@@ -7,10 +9,10 @@ def readgroups():
         for line in file:
             if line.find('#') == 0:
                 continue
-            split = line.find(':')
-            groupName = line[:split]
-            groupMembers = [x.strip() for x in line[split + 1:].split(',')]
-            groups[groupName] = groupMembers
+            splitindex = line.find(':')
+            groupident = [x.strip() for x in line[:splitindex].split(',')]
+            groupMembers = [x.strip() for x in line[splitindex + 1:].split(',')]
+            groups[groupident[0]] = Group(groupident[1], groupMembers)
     return groups
 
 
@@ -32,17 +34,24 @@ servers = readservers()
 groups = readgroups()
 
 
+def addusertogroup(user, groupname, recipient):
+    if groupname not in groups.keys():
+        return "Group " + groupname + " does not exist"
+    groups[groupname].members.append(user)
+    return "User " + user + " has been added to group " + groupname, recipient
+
+
 def saveconfig():
     configfile = open("config/servers", "w")
-    for host, serverdata in servers.items():
+    for host, serverdata in servers:
         newline = host + ": "
         for datapiece in serverdata:
             newline += datapiece + ', '
         newline = newline[:-2] + ']'
         configfile.write(newline + '\n')
     configfile = open("config/groups", "w")
-    for groupname, groupmembers in groups.items():
-        newline = groupname + ": "
-        for member in groupmembers:
+    for groupname, groupobject in groups.items():
+        newline = groupname + ", " + groupobject.owner + ": "
+        for member in groupobject.members:
             newline += member + ", "
         configfile.write(newline[:-2] + '\n')
