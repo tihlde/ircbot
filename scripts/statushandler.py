@@ -11,6 +11,10 @@ import confighandler as ch
 upStatus = '\x033,1oppe\x03'
 downStatus = '\x030,4NEDE\x03'
 
+lastupdate = time.localtime()
+updateMinute = time.strftime('%M')
+updateDay = time.strftime('%d')
+
 newStatuses = {}  # format: hostname, status
 oldStatuses = {}
 
@@ -33,12 +37,14 @@ def sendserverstatus(statusgroup, nick):
     for host, value in ch.servers.items():
         if ch.servers[2].find(statusgroup) != -1:
             msg += host + ' ' + newStatuses[host] + '  '
-    bot.sendtext(msg, nick)
+    if len(msg) > 0:
+        bot.sendtext(msg + "Last update: " + lastupdate, nick)
 
 
 def threadpings():
     for key in newStatuses:
         newStatuses[key] = getstatus(key)
+    lastupdate = time.localtime()
 
 
 def updatestatuses():
@@ -69,10 +75,6 @@ def midnightreminder():
         if len(msg) > 0:
             for name in newstatus[4]:
                 bot.sendtext(msg, name)
-
-
-updateMinute = time.strftime('%M')
-updateDay = time.strftime('%d')
 
 
 def update():
