@@ -1,6 +1,7 @@
 __author__ = 'Harald'
 
 import bot
+import confighandler as ch
 import serial
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
@@ -10,7 +11,9 @@ maxDiscoTime = 3000
 standardDiscoTime = 20
 
 
-def parsediscowish(ircmsg):
+def parsediscowish(ircmsg, sender):
+    if sender not in ch.groups["drift"]:  # if sender is not in group "drift" do nothing
+        return
     global discoActive
     if ircmsg.find('.discodeactivate') != -1:
         discoActive = False
