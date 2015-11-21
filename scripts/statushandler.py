@@ -94,5 +94,3 @@ def update():
 
 def savechanges():
     ch.saveconfig()
-
-    # def parsemsg(msg):
