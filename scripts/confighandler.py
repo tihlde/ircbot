@@ -2,6 +2,7 @@
 __author__ = 'Harald'
 
 from group import Group
+from server import Server
 
 
 class Dataobject(object):
@@ -35,21 +36,19 @@ def readgroups():
     groups = {}
     readfile = readdata('config/groups')
     for dataobject in readfile:
-        groups[dataobject.ident[0]] = Group(dataobject.ident[0], dataobject.ident[1], dataobject.data)
+        groups[dataobject.ident[0]] = Group(dataobject.ident[0], dataobject.ident[1],
+                                            dataobject.data)
     return groups
 
 
 # read servers
 def readservers():
     servers = {}
-    with open('config/servers', 'r') as file:
-        for line in file:
-            if line.find('#') == 0 or line == '':
-                continue
-            split = line.find(':')
-            servername = line[:split]
-            data = [x.strip(' ') for x in (line[split + 1:].split(','))]
-            servers[servername] = data
+    readfile = readdata('config/servers')
+    for dataobject in readfile:
+        servers[dataobject.ident[0]] = Server(dataobject.ident[0],
+                                              dataobject.ident[1], dataobject.data[0],
+                                              dataobject.data[1], dataobject.data[2])
     return servers
 
 
