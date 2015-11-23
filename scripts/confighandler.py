@@ -47,7 +47,7 @@ def saveconfig():
         newline = host + ": "
         for datapiece in serverdata:
             newline += datapiece + ', '
-        configfile.write(newline + '\n')
+        configfile.write(newline[:-2] + '\n')
     configfile = open("config/groups", "w")
     for groupname, groupobject in groups.items():
         newline = groupname + ", " + groupobject.owner + ": "
