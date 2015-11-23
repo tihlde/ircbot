@@ -67,7 +67,7 @@ def addusertogroup(user, groupname, recipient):
 def saveconfig():
     configfile = open("config/servers", "w")
     for host, serverobject in servers.items():
-        configfile.write(serverobject + '\n')
+        configfile.write(serverobject.__str__() + '\n')
     configfile = open("config/groups", "w")
     for groupname, groupobject in groups.items():
-        configfile.write(groupobject + '\n')
+        configfile.write(groupobject.__str__() + '\n')
