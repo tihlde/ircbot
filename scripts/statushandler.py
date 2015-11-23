@@ -1,3 +1,4 @@
+# coding: utf-8
 __author__ = 'Harald'
 
 import threading
@@ -60,7 +61,7 @@ def minutewarning():
         oldstatus = oldStatuses[i]
         if newstatus[0] != oldstatus[0]:  # status has changed
             oldstatus[0] = newstatus[0]
-            msg += newstatus[2] + ' er nå ' + newstatus[0] + '  '
+            msg += newstatus[2] + ' er nÃ¥ ' + newstatus[0] + '  '
         if len(msg) > 0:
             for name in newstatus[4]:
                 bot.sendtext(msg, name)

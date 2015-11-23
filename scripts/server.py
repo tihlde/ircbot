@@ -1,3 +1,4 @@
+# coding: utf-8
 __author__ = 'Harald'
 
 
@@ -16,7 +17,7 @@ class Server(object):
         self.notifygroup = notifygroup
 
     def __str__(self):
-        string = "Server: " + "owner=" + self.owner + " " + self.hostname + " " + self.prettyname + " " + self.statusgroup + " " + self.notifygroup
+        string = self.hostname + " " + self.owner + ": " + self.prettyname + " " + self.statusgroup + " " + self.notifygroup
         return string
 
     def __repr__(self):
