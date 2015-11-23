@@ -9,9 +9,9 @@ class Server(object):
     statusgroup = ""
     notifygroup = ""
 
-    def __init__(self, owner, hostname, prettyname, statusgroup, notifygroup):
-        self.owner = owner
+    def __init__(self, hostname, owner, prettyname, statusgroup, notifygroup):
         self.hostname = hostname
+        self.owner = owner
         self.prettyname = prettyname
         self.statusgroup = statusgroup
         self.notifygroup = notifygroup
