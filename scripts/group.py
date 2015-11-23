@@ -12,7 +12,7 @@ class Group(object):
         self.members = members
 
     def __str__(self):
-        string = self.name + " " + self.owner + ": "
+        string = self.name + " " + self.owner + ":"
         for member in self.members:
             string += " " + member
         return string
