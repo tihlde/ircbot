@@ -10,9 +10,9 @@ def readgroups():
             if line.find('#') == 0:
                 continue
             splitindex = line.find(':')
-            groupident = [x.strip() for x in line[:splitindex].split(',')]
-            groupMembers = [x.strip() for x in line[splitindex + 1:].split(',')]
-            groups[groupident[0]] = Group(groupident[1], groupMembers)
+            groupident = [x.strip() for x in line[:splitindex].split(' ')]
+            groupMembers = [x.strip() for x in line[splitindex + 1:].split(' ')]
+            groups[groupident[0]] = Group(groupident[0], groupident[1], groupMembers)
     return groups
 
 
@@ -43,11 +43,10 @@ def addusertogroup(user, groupname, recipient):
 
 def saveconfig():
     configfile = open("config/servers", "w")
-    for host, serverdata in servers:
+    for host, serverdata in servers.items():
         newline = host + ": "
         for datapiece in serverdata:
             newline += datapiece + ', '
-        newline = newline[:-2] + ']'
         configfile.write(newline + '\n')
     configfile = open("config/groups", "w")
     for groupname, groupobject in groups.items():
