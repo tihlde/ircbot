@@ -28,7 +28,7 @@ commands = ['getstatus', 'gs',
 
 
 def getstatus(hostname):
-    if os.system('ping -c 1 -i 0.2 ' + hostname + '.tihlde.org') == 0:
+    if os.system('ping -c 1 -i 0.2 ' + hostname) == 0:
         return upStatus
     else:
         return downStatus
