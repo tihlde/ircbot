@@ -26,8 +26,8 @@ def readdata(filestring):
             if line == '':
                 continue
             splitindex = line.find(': ')
-            ident = striplist(line[:splitindex].split(' '))
-            data = striplist(line[splitindex + 1:].split(' '))
+            ident = striplist(line[:splitindex].strip().split(' '))
+            data = striplist(line[splitindex + 1:].strip().split(' '))
             dataobjects.append(Dataobject(ident, data))
     return dataobjects
 
@@ -46,6 +46,8 @@ def readservers():
     servers = {}
     readfile = readdata('config/servers')
     for dataobject in readfile:
+        print(dataobject.ident)
+        print(dataobject.data)
         servers[dataobject.ident[0]] = Server(dataobject.ident[0],
                                               dataobject.ident[1], dataobject.data[0],
                                               dataobject.data[1], dataobject.data[2])
