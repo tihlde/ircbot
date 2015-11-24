@@ -46,8 +46,6 @@ def readservers():
     servers = {}
     readfile = readdata('config/servers')
     for dataobject in readfile:
-        print(dataobject.ident)
-        print(dataobject.data)
         servers[dataobject.ident[0]] = Server(dataobject.ident[0],
                                               dataobject.ident[1], dataobject.data[0],
                                               dataobject.data[1], dataobject.data[2])
@@ -72,3 +70,21 @@ def saveconfig():
     configfile = open("config/groups", "w")
     for groupname, groupobject in groups.items():
         configfile.write(groupobject.__str__() + '\n')
+
+
+def groupadd(groupname, creator):
+    if groupname in groups:
+        return False
+    groups[groupname] = Group(groupname, creator, [creator])
+    return True
+
+
+def groupdel(groupname, executor):
+    global groups
+    if groupname not in groups:
+        return False
+    group = groups[groupname]
+    if group.owner == executor:
+        del groups[groupname]
+        return True
+    return False
