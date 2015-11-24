@@ -74,17 +74,29 @@ def saveconfig():
 
 def groupadd(groupname, creator):
     if groupname in groups:
-        return False
+        return "Group " + groupname + " does not exist"
     groups[groupname] = Group(groupname, creator, [creator])
-    return True
+    return "Group " + groupname + " created"
 
 
-def groupdel(groupname, executor):
+def groupdel(groupname, executer):
     global groups
     if groupname not in groups:
-        return False
+        return "Group " + groupname + " does not exist"
     group = groups[groupname]
-    if group.owner == executor:
+    if group.owner == executer:
         del groups[groupname]
-        return True
-    return False
+        return "Group " + groupname + " created"
+    return "You must be the owner of a group to delete it"
+
+
+def groupmemberadd(groupname, executer, newmemeber):
+    if groupname not in groups:
+        return "Group " + groupname + " does not exist"
+    group = groups[groupname]
+    if executer != group.owner and executer != newmemeber:
+        return "You must be the owner of a group to add someone other than yourself"
+    if newmemeber in group.members:
+        return "Member " + newmemeber + " is already a part of group " + groupname
+    group.members.append(newmemeber)
+    return "Member " + newmemeber + " has been added to the group " + groupname
