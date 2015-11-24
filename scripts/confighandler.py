@@ -90,13 +90,25 @@ def groupdel(groupname, executer):
     return "You must be the owner of a group to delete it"
 
 
-def groupmemberadd(groupname, executer, newmemeber):
+def groupmemberadd(groupname, executer, newmember):
     if groupname not in groups:
         return "Group " + groupname + " does not exist"
     group = groups[groupname]
-    if executer != group.owner and executer != newmemeber:
-        return "You must be the owner of a group to add someone other than yourself"
-    if newmemeber in group.members:
-        return "Member " + newmemeber + " is already a part of group " + groupname
-    group.members.append(newmemeber)
-    return "Member " + newmemeber + " has been added to the group " + groupname
+    if executer != group.owner and executer != newmember:
+        return "You must be the owner of a group to add someone other than yourself. " + group.owner + " is the owner of the group " + groupname
+    if newmember in group.members:
+        return "Member " + newmember + " is already a part of group " + groupname
+    group.members.append(newmember)
+    return "Member " + newmember + " has been added to the group " + groupname
+
+def groupmemberdel(groupname, executer, member):
+    if groupname not in groups:
+        return "Group " + groupname + " does not exist"
+    group = groups[groupname]
+    if executer == group.owner and executer == member:
+        return "You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner"
+    if executer != group.owner and executer != member:
+        return "You must be the owner of a group to remove someone other than yourself"
+    if member in group.members:
+        group.members.remove(member)
+    return "Member " + member + " has been removed from the group " + groupname
