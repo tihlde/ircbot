@@ -16,7 +16,7 @@ lastupdate = time.localtime()
 updateMinute = time.strftime('%M')
 updateDay = time.strftime('%d')
 
-newStatuses = {}  # format: hostname, status
+newStatuses = {}
 oldStatuses = {}
 
 
