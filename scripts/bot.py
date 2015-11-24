@@ -71,8 +71,17 @@ while 1:
         dh.parsediscowish(ircmsg, sender)
         recipient = channel
 
-    if ircmsg.find('.status(') != -1:  # Respond to .serverstatus
-        sh.sendserverstatus(ircmsg[ircmsg.find('(') + 1: ircmsg.find(')')], sender)
+    angleindex = ircmsg.find('>')
+    if angleindex != -1:
+        command = ircmsg[angleindex + 1:]
+        argsstart = command.find(" ")
+        args = [x.replace(" ", '') for x in command[argsstart:].strip().split(' ')]
+        command = command[:argsstart].strip()
+        if command not in sh.commands:
+            sendtext("Invalid command: " + command, recipient)
+        else:
+            sh.executecommand(command, args, sender)
+
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])

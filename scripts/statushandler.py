@@ -5,7 +5,6 @@ import threading
 import os
 import time
 
-import bot
 import confighandler as ch
 
 
@@ -18,6 +17,14 @@ updateDay = time.strftime('%d')
 
 newStatuses = {}
 oldStatuses = {}
+
+
+commands = ['getstatus', 'gs',
+            'groupadd', 'ga',
+            'groupdel', 'gd',
+            'groupmemberadd', 'gma',
+            'groupmembderdel', 'gmd'
+            ]
 
 
 def getstatus(hostname):
@@ -33,13 +40,13 @@ for host, serverdata in ch.servers.items():
     oldStatuses[host] = status
 
 
-def sendserverstatus(statusgroup, nick):
+def getserverstatus(statusgroup, nick):
     msg = ''
     for host, value in ch.servers.items():
         if ch.servers[2].find(statusgroup) != -1:
             msg += host + ' ' + newStatuses[host] + '  '
-    if len(msg) > 0:
-        bot.sendtext(msg + "Last update: " + lastupdate, nick)
+    return msg + "Last update: " + lastupdate
+
 
 
 def threadpings():
@@ -55,6 +62,7 @@ def updatestatuses():
 
 
 def minutewarning():
+    msgs = {}
     for i in range(len(newStatuses)):
         msg = ''
         newstatus = newStatuses[i]
@@ -64,10 +72,12 @@ def minutewarning():
             msg += newstatus[2] + ' er nå ' + newstatus[0] + '  '
         if len(msg) > 0:
             for name in newstatus[4]:
-                bot.sendtext(msg, name)
+                msgs[name] = msg
+    return msgs
 
 
 def midnightreminder():
+    msgs = {}
     for i in range(len(newStatuses)):
         msg = ''
         newstatus = newStatuses[i]
@@ -75,7 +85,8 @@ def midnightreminder():
             msg += newstatus[2] + ' er ' + newstatus[0] + '  '
         if len(msg) > 0:
             for name in newstatus[4]:
-                bot.sendtext(msg, name)
+                msgs[name] = msg
+    return msgs
 
 
 def update():
@@ -91,6 +102,48 @@ def update():
     if day != updateDay:
         midnightreminder()
         updateDay = day
+
+
+def executecommand(command, args, executor):
+    if command == 'getstatus' or command == 'gs':
+        return 'command not supported yet'
+
+    elif command == 'groupadd' or command == 'ga':
+        return ch.groupadd(args[0], executor)
+
+    elif command == 'groupdel' or command == 'gd':
+        return ch.groupdel(args[0], executor)
+
+    elif command == 'grouplist' or command == 'gs':
+        return 'command not supported yet'
+
+    elif command == 'groupmemberadd' or command == 'gma':
+        return ch.groupmemberadd(args[0], executor, args[1])
+
+    elif command == 'groupmemberdel' or command == 'gmd':
+        return ch.groupmemberdel(args[0], executor, args[1])
+
+    elif command == 'groupmemberlist' or command == 'gmls':
+        return 'command not supported yet'
+
+    elif command == 'groupownerset' or command == 'gos':
+        return 'command not supported yet'
+
+    elif command == 'serveradd' or command == 'sa':
+        return 'command not supported yet'
+
+    elif command == 'serverdel' or command == 'sd':
+        return 'command not supported yet'
+
+    elif command == 'servernameset' or command == 'sns':
+        return 'command not supported yet'
+
+    elif command == 'servernotifyset' or command == 'sns':
+        return 'command not supported yet'
+
+    elif command == 'serverstatusset' or command == 'ssgs':
+        return 'command not supported yet'
+    # elif command == '' or command == '':
 
 
 def savechanges():
