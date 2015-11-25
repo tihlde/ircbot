@@ -92,6 +92,6 @@ while 1:
         for update in sh.updatechanges:
             serverdata = update[0]
             group = sh.getgroup(serverdata.notifygroup)
-            for name in group:
+            for name in group.members:
                 sendtext(update[1], name)
         sh.updatechanges = []
