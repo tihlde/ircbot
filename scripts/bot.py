@@ -13,6 +13,7 @@ channel = '#tihlde-drift'
 botnick = 'falkner'
 password = open('pw').read()
 
+
 def send(msg):
     msg += '\r\n'
     print('SENDING')
@@ -73,7 +74,7 @@ while 1:
         recipient = channel
 
     angleindex = ircmsg.find('>')
-    if angleindex != -1:
+    if angleindex != -1 and ircmsg[angleindex - 1] == ':':
         command = ircmsg[angleindex + 1:]
         argsstart = command.find(" ")
         args = [x.replace(" ", '') for x in command[argsstart:].strip().split(' ')]
@@ -82,7 +83,6 @@ while 1:
             sendtext("Invalid command: " + command, recipient)
         else:
             sendtext(sh.executecommand(command, args, sender), recipient)
-
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
