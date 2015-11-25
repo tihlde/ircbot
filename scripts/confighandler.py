@@ -116,13 +116,13 @@ def groupmemberdel(groupname, executer, member):
 
 def grouplist():
     string = ''
-    for groupname, group in groups:
+    for groupname, group in groups.items():
         string += groupname + ' '
     return string
 
 
 def groupmemberlist(groupname):
-    if groupname not in groups:
+    if groupname not in groups.items():
         return "Group " + groupname + " does not exist"
     string = ''
     for member in groups[groupname].members:
