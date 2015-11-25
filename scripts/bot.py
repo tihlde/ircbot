@@ -81,10 +81,17 @@ while 1:
         if command not in sh.commands:
             sendtext("Invalid command: " + command, recipient)
         else:
-            sh.executecommand(command, args, sender)
+            sendtext(sh.executecommand(command, args, sender), recipient)
 
 
     if ircmsg.find('PING :') != -1:  # respond to pings
         send('PONG ' + ircmsg[ircmsg.find(':') + 1])
 
     sh.update()
+    if len(sh.updatechanges) > 0:
+        for update in sh.updatechanges:
+            serverdata = update[0]
+            group = sh.getgroup(serverdata.notifygroup)
+            for name in group:
+                sendtext(update[1], name)
+        sh.updatechanges = []

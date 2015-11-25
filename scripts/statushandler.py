@@ -15,10 +15,6 @@ lastupdate = time.localtime()
 updateMinute = time.strftime('%M')
 updateDay = time.strftime('%d')
 
-newStatuses = {}
-oldStatuses = {}
-
-
 commands = ['getstatus', 'gs',
             'groupadd', 'ga',
             'groupdel', 'gd',
@@ -35,73 +31,52 @@ def getstatus(hostname):
 
 
 for host, serverdata in ch.servers.items():
-    status = getstatus(host)
-    newStatuses[host] = status
-    oldStatuses[host] = status
+    serverdata.status = getstatus(host)
 
 
 def getserverstatus(statusgroup, nick):
     msg = ''
-    for host, value in ch.servers.items():
+    for host, serverdata in ch.servers.items():
         if ch.servers[2].find(statusgroup) != -1:
-            msg += host + ' ' + newStatuses[host] + '  '
+            msg += host + ' ' + serverdata.status + '  '
     return msg + "Last update: " + lastupdate
 
 
+updatechanges = []
 
-def threadpings():
-    for key in newStatuses:
-        newStatuses[key] = getstatus(key)
+
+def minuteupdate():
+    for host, serverdata in ch.servers:
+        newstatus = getstatus(host)
+        if newstatus != serverdata.status:
+            serverdata.status = newstatus
+            updatechanges.append([serverdata, newstatus])
+    global lastupdate
     lastupdate = time.localtime()
 
 
-def updatestatuses():
-    t = threading.Thread(target=threadpings, args=())
+def threadupdate():
+    t = threading.Thread(target=minuteupdate, args=())
     t.daemon = True
     t.start()
 
 
-def minutewarning():
-    msgs = {}
-    for i in range(len(newStatuses)):
-        msg = ''
-        newstatus = newStatuses[i]
-        oldstatus = oldStatuses[i]
-        if newstatus[0] != oldstatus[0]:  # status has changed
-            oldstatus[0] = newstatus[0]
-            msg += newstatus[2] + ' er nå ' + newstatus[0] + '  '
-        if len(msg) > 0:
-            for name in newstatus[4]:
-                msgs[name] = msg
-    return msgs
-
-
-def midnightreminder():
-    msgs = {}
-    for i in range(len(newStatuses)):
-        msg = ''
-        newstatus = newStatuses[i]
-        if newstatus[0].find(downStatus) != -1:  # status indicates it is down
-            msg += newstatus[2] + ' er ' + newstatus[0] + '  '
-        if len(msg) > 0:
-            for name in newstatus[4]:
-                msgs[name] = msg
-    return msgs
+def getgroup(groupname):
+    return ch.groups[groupname]
 
 
 def update():
     minute = time.strftime('%M')
     global updateMinute
     if minute != updateMinute:
-        updatestatuses()
-        minutewarning()
+        threadupdate()
         updateMinute = minute
 
-    day = time.strftime('%d')
-    global updateDay
-    if day != updateDay:
-        midnightreminder()
-        updateDay = day
+        # day = time.strftime('%d')
+        # global updateDay
+        # if day != updateDay:
+        #     midnightreminder()
+        #     updateDay = day
 
 
 def executecommand(command, args, executor):
@@ -143,7 +118,7 @@ def executecommand(command, args, executor):
 
     elif command == 'serverstatusset' or command == 'ssgs':
         return 'command not supported yet'
-    # elif command == '' or command == '':
+        # elif command == '' or command == '':
 
 
 def savechanges():
