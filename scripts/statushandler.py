@@ -90,7 +90,7 @@ def executecommand(command, args, executor):
         return ch.groupdel(args[0], executor)
 
     elif command == 'grouplist' or command == 'gs':
-        return 'command not supported yet'
+        return ch.grouplist()
 
     elif command == 'groupmemberadd' or command == 'gma':
         return ch.groupmemberadd(args[0], executor, args[1])
@@ -99,7 +99,7 @@ def executecommand(command, args, executor):
         return ch.groupmemberdel(args[0], executor, args[1])
 
     elif command == 'groupmemberlist' or command == 'gmls':
-        return 'command not supported yet'
+        return ch.groupmemberlist(args[0])
 
     elif command == 'groupownerset' or command == 'gos':
         return 'command not supported yet'
