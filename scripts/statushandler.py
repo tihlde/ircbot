@@ -18,10 +18,10 @@ updateDay = time.strftime('%d')
 commands = ['getstatus', 'gs',
             'groupadd', 'ga',
             'groupdel', 'gd',
-            'grouplist', 'gs',
+            'grouplist', 'gls',
             'groupmemberadd', 'gma',
             'groupmembderdel', 'gmd'
-            'groupmemberlist', 'gms',
+            'groupmemberlist', 'gmls',
             'groupownerset', 'gos',
             'serveradd', 'sa',
             'serverdel', 'sd',
@@ -127,6 +127,7 @@ def executecommand(command, args, executor):
     elif command == 'serverstatusset' or command == 'ssgs':
         return 'command not supported yet'
         # elif command == '' or command == '':
+    return 'Nothing to return, haraldfw sucks at programming'
 
 
 def savechanges():
