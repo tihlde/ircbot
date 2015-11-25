@@ -1,5 +1,5 @@
 # coding: utf-8
-__author__ = 'Harald'
+__author__ = 'Harald Floor Wilhelmsen'
 
 import threading
 import os
