@@ -10,7 +10,7 @@ import discohandler as dh
 
 ircserver = 'irc.freenode.net'
 channel = '#tihlde-drift'
-botnick = 'blaine'
+botnick = 'watson'
 password = open('pw').read()
 
 def send(msg):
