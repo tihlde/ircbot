@@ -18,8 +18,16 @@ updateDay = time.strftime('%d')
 commands = ['getstatus', 'gs',
             'groupadd', 'ga',
             'groupdel', 'gd',
+            'grouplist', 'gs',
             'groupmemberadd', 'gma',
             'groupmembderdel', 'gmd'
+            'groupmemberlist', 'gms',
+            'groupownerset', 'gos',
+            'serveradd', 'sa',
+            'serverdel', 'sd',
+            'servernameset', 'sns',
+            'servernotifyset', 'sngs',
+            'serverstatusset', 'ssgs'
             ]
 
 
