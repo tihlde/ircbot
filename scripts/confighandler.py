@@ -86,7 +86,7 @@ def groupdel(groupname, executer):
     group = groups[groupname]
     if group.owner == executer:
         del groups[groupname]
-        return "Group " + groupname + " created"
+        return "Group " + groupname + " deleted"
     return "You must be the owner of a group to delete it"
 
 
