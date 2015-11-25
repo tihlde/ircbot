@@ -20,7 +20,7 @@ commands = ['getstatus', 'gs',
             'groupdel', 'gd',
             'grouplist', 'gls',
             'groupmemberadd', 'gma',
-            'groupmembderdel', 'gmd'
+            'groupmembderdel', 'gmd',
             'groupmemberlist', 'gmls',
             'groupownerset', 'gos',
             'serveradd', 'sa',
