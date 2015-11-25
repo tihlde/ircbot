@@ -3,11 +3,12 @@ __author__ = 'Harald'
 
 
 class Server(object):
-    owner = ""
-    hostname = ""
-    prettyname = ""
-    statusgroup = ""
-    notifygroup = ""
+    owner = ''
+    hostname = ''
+    prettyname = ''
+    statusgroup = ''
+    notifygroup = ''
+    status = ''
 
     def __init__(self, hostname, owner, prettyname, statusgroup, notifygroup):
         self.hostname = hostname
