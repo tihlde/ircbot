@@ -132,12 +132,12 @@ def groupmemberlist(groupname):
     return string
 
 
-def serveradd(hostname, owner, prettyname, statusgroup, notifygroup):
+def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
     if hostname in servers:
         return "Hostname " + hostname + " already exists"
     if notifygroup not in groups:
         return "Group " + notifygroup + " does not exist"
-    servers[hostname] = Server(hostname, prettyname, statusgroup, notifygroup)
+    servers[hostname] = Server(hostname, executor, prettyname, statusgroup, notifygroup)
     return "Server " + hostname + " added"
 
 
