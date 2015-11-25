@@ -122,7 +122,7 @@ def grouplist():
 
 
 def groupmemberlist(groupname):
-    if groupname not in groups.items():
+    if groupname not in groups:
         return "Group " + groupname + " does not exist"
     string = ''
     for member in groups[groupname].members:
