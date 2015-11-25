@@ -74,7 +74,7 @@ def saveconfig():
 
 def groupadd(groupname, creator):
     if groupname in groups:
-        return "Group " + groupname + " does not exist"
+        return "Group " + groupname + " already exists"
     groups[groupname] = Group(groupname, creator, [creator])
     return "Group " + groupname + " created"
 
@@ -101,6 +101,7 @@ def groupmemberadd(groupname, executer, newmember):
     group.members.append(newmember)
     return "Member " + newmember + " has been added to the group " + groupname
 
+
 def groupmemberdel(groupname, executer, member):
     if groupname not in groups:
         return "Group " + groupname + " does not exist"
@@ -111,7 +112,8 @@ def groupmemberdel(groupname, executer, member):
         return "You must be the owner of a group to remove someone other than yourself"
     if member in group.members:
         group.members.remove(member)
-    return "Member " + member + " has been removed from the group " + groupname
+        return "Member " + member + " has been removed from the group " + groupname
+    return "Member " + member + " does not exist in group " + groupname
 
 
 def grouplist():
@@ -128,3 +130,22 @@ def groupmemberlist(groupname):
     for member in groups[groupname].members:
         string += "-" + member + " "
     return string
+
+
+def serveradd(hostname, owner, prettyname, statusgroup, notifygroup):
+    if hostname in servers:
+        return "Hostname " + hostname + " already exists"
+    if notifygroup not in groups:
+        return "Group " + notifygroup + " does not exist"
+    servers[hostname] = Server(hostname, prettyname, statusgroup, notifygroup)
+    return "Server " + hostname + " added"
+
+
+def serverdel(hostname, executor):
+    if hostname not in servers:
+        return "Hostname " + hostname + " does not exist"
+    server = servers[hostname]
+    if server.owner != executor:
+        return "You must be the creator of a server to delete it. Current owner is -" + server.owner
+    del servers[hostname]
+    return "Server " + hostname + " deleted"

@@ -88,46 +88,50 @@ def update():
 
 
 def executecommand(command, args, executor):
-    if command == 'getstatus' or command == 'gs':
-        return 'command not supported yet'
+    try:
+        if command == 'getstatus' or command == 'gs':
+            return 'command not supported yet'
 
-    elif command == 'groupadd' or command == 'ga':
-        return ch.groupadd(args[0], executor)
+        elif command == 'groupadd' or command == 'ga':
+            return ch.groupadd(args[0], executor)
 
-    elif command == 'groupdel' or command == 'gd':
-        return ch.groupdel(args[0], executor)
+        elif command == 'groupdel' or command == 'gd':
+            return ch.groupdel(args[0], executor)
 
-    elif command == 'grouplist' or command == 'gs':
-        return ch.grouplist()
+        elif command == 'grouplist' or command == 'gs':
+            return ch.grouplist()
 
-    elif command == 'groupmemberadd' or command == 'gma':
-        return ch.groupmemberadd(args[0], executor, args[1])
+        elif command == 'groupmemberadd' or command == 'gma':
+            return ch.groupmemberadd(args[0], executor, args[1])
 
-    elif command == 'groupmemberdel' or command == 'gmd':
-        return ch.groupmemberdel(args[0], executor, args[1])
+        elif command == 'groupmemberdel' or command == 'gmd':
+            return ch.groupmemberdel(args[0], executor, args[1])
 
-    elif command == 'groupmemberlist' or command == 'gmls':
-        return ch.groupmemberlist(args[0])
+        elif command == 'groupmemberlist' or command == 'gmls':
+            return ch.groupmemberlist(args[0])
 
-    elif command == 'groupownerset' or command == 'gos':
-        return 'command not supported yet'
+        elif command == 'groupownerset' or command == 'gos':
+            return 'command not supported yet'
 
-    elif command == 'serveradd' or command == 'sa':
-        return 'command not supported yet'
+        elif command == 'serveradd' or command == 'sa':
+            return ch.serveradd(args[0], executor, args[1], args[2], args[3])
 
-    elif command == 'serverdel' or command == 'sd':
-        return 'command not supported yet'
+        elif command == 'serverdel' or command == 'sd':
+            return ch.serverdel(args[0], executor)
 
-    elif command == 'servernameset' or command == 'sns':
-        return 'command not supported yet'
+        elif command == 'servernameset' or command == 'sns':
+            return 'command not supported yet'
 
-    elif command == 'servernotifyset' or command == 'sns':
-        return 'command not supported yet'
+        elif command == 'servernotifyset' or command == 'sns':
+            return 'command not supported yet'
 
-    elif command == 'serverstatusset' or command == 'ssgs':
-        return 'command not supported yet'
-        # elif command == '' or command == '':
-    return 'Nothing to return, haraldfw sucks at programming'
+        elif command == 'serverstatusset' or command == 'ssgs':
+            return 'command not supported yet'
+
+        return 'Nothing to return, haraldfw sucks at programming'
+
+    except IndexError:
+        return "Incorrent number of args for executed command"
 
 
 def savechanges():
