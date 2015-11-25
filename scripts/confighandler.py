@@ -112,3 +112,19 @@ def groupmemberdel(groupname, executer, member):
     if member in group.members:
         group.members.remove(member)
     return "Member " + member + " has been removed from the group " + groupname
+
+
+def grouplist():
+    string = ''
+    for groupname, group in groups:
+        string += groupname + ' '
+    return string
+
+
+def groupmemberlist(groupname):
+    if groupname not in groups:
+        return "Group " + groupname + " does not exist"
+    string = ''
+    for member in groups[groupname].members:
+        string += member + " "
+    return string
