@@ -1,7 +1,6 @@
 # coding: utf-8
 __author__ = 'Harald'
 
-import bot
 import confighandler as ch
 import serial
 
@@ -18,10 +17,10 @@ def parsediscowish(ircmsg, sender):
     global discoActive
     if ircmsg.find('.discodeactivate') != -1:
         discoActive = False
-        bot.sendtext('Discotime deactivated', bot.channel)
+        return 'Discotime deactivated'
     elif ircmsg.find('.discoreactivate') != -1:
         discoActive = True
-        bot.sendtext('Discotime reactivated', bot.channel)
+        return 'Discotime reactivated'
     try:
         if discoActive and ircmsg.find('.discotime') != -1:
             try:
@@ -38,3 +37,4 @@ def parsediscowish(ircmsg, sender):
             ser.write(b'0')
     except serial.serialutil.SerialException:
         print('Device unplugged or wrong device used')
+    return ''

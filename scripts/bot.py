@@ -13,7 +13,6 @@ channel = '#tihlde-drift'
 botnick = 'surge'
 password = open('pw').read()
 
-
 def send(msg):
     msg += '\r\n'
     print('SENDING')
@@ -68,7 +67,9 @@ while 1:
 
     # If message is to channel
     if ircmsg.find('PRIVMSG ' + channel) != -1:
-        dh.parsediscowish(ircmsg, sender)
+        discoreturn = dh.parsediscowish(ircmsg, sender)
+        if discoreturn != '':
+            sendtext(discoreturn, channel)
         recipient = channel
 
     angleindex = ircmsg.find('>')
