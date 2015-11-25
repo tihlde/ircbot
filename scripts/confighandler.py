@@ -126,5 +126,5 @@ def groupmemberlist(groupname):
         return "Group " + groupname + " does not exist"
     string = ''
     for member in groups[groupname].members:
-        string += member + " "
+        string += "-" + member + " "
     return string
