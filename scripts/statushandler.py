@@ -46,7 +46,7 @@ updatechanges = []
 
 
 def minuteupdate():
-    for host, serverdata in ch.servers:
+    for host, serverdata in ch.servers.items():
         newstatus = getstatus(host)
         if newstatus != serverdata.status:
             serverdata.status = newstatus
