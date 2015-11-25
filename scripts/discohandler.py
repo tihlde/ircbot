@@ -13,7 +13,7 @@ standardDiscoTime = 20
 
 def parsediscowish(ircmsg, sender):
     if sender not in ch.groups["drift"].members:  # if sender is not in group "drift" do nothing
-        return
+        return ''
     global discoActive
     if ircmsg.find('.discodeactivate') != -1:
         discoActive = False
