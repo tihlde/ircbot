@@ -5,7 +5,8 @@ __author__ = 'Harald'
 class Group(object):
     name = ""
     owner = ""
-    members = {}
+    members = []
+
     def __init__(self, name, owner, members):
         self.name = name
         self.owner = owner
