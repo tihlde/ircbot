@@ -128,6 +128,9 @@ def executecommand(command, args, executor):
         elif command == 'serverstatusset' or command == 'ssgs':
             return 'command not supported yet'
 
+        elif command == 'ping':
+            return ping(args[0])
+
         return 'Nothing to return, haraldfw sucks at programming'
 
     except IndexError:
@@ -141,6 +144,9 @@ def readStatuses(statusgroup):
     if len(msg) == len(statusgroup) + 1:
         msg = 'No registered servers have the statusgroup ' + statusgroup
     return msg
+
+def ping(hostname):
+    return hostname + ': ' + getstatus(hostname)
 
 def savechanges():
     ch.saveconfig()
