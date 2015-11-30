@@ -135,7 +135,7 @@ def executecommand(command, args, executor):
 
 def readStatuses(statusgroup):
     msg = statusgroup + ':'
-    for serverdata, status in ch.servers.items():
+    for hostname, serverdata in ch.servers.items():
         if serverdata.statusgroup == statusgroup:
             msg += '  ' + serverdata.status
     if len(msg) == len(statusgroup) + 1:
