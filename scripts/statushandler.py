@@ -90,7 +90,7 @@ def update():
 def executecommand(command, args, executor):
     try:
         if command == 'getstatus' or command == 'gs':
-            return 'command not supported yet'
+            return readStatuses(args[0])
 
         elif command == 'groupadd' or command == 'ga':
             return ch.groupadd(args[0], executor)
@@ -131,8 +131,16 @@ def executecommand(command, args, executor):
         return 'Nothing to return, haraldfw sucks at programming'
 
     except IndexError:
-        return "Incorrent number of args for executed command"
+        return 'Incorrent number of arguments for command' + command
 
+def readStatuses(statusgroup):
+    msg = statusgroup + ':'
+    for serverdata, status in ch.servers:
+        if serverdata.statusgroup == statusgroup:
+            msg += '  ' + serverdata.status
+    if len(msg) == len(statusgroup) + 1:
+        msg = 'No registered servers have the statusgroup ' + statusgroup
+    return msg
 
 def savechanges():
     ch.saveconfig()

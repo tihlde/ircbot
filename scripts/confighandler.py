@@ -46,9 +46,9 @@ def readservers():
     servers = {}
     readfile = readdata('config/servers')
     for dataobject in readfile:
-        servers[dataobject.ident[0]] = Server(dataobject.ident[0],
-                                              dataobject.ident[1], dataobject.data[0],
-                                              dataobject.data[1], dataobject.data[2])
+        servers[dataobject.ident[0]] = Server(dataobject.ident[0], dataobject.ident[1],
+                                              dataobject.data[0], dataobject.data[1],
+                                              dataobject.data[2])
     return servers
 
 
