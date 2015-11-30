@@ -27,7 +27,8 @@ commands = ['getstatus', 'gs',
             'serverdel', 'sd',
             'servernameset', 'sns',
             'servernotifyset', 'sngs',
-            'serverstatusset', 'ssgs'
+            'serverstatusset', 'ssgs',
+            'ping'
             ]
 
 
