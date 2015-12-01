@@ -57,7 +57,7 @@ servers = readservers()
 
 
 def addusertogroup(user, groupname, recipient):
-    if groupname not in groups.keys():
+    if not strindict(groupname, groups):
         return "Group " + groupname + " does not exist"
     groups[groupname].members.append(user)
     return "User " + user + " has been added to group " + groupname, recipient
@@ -73,7 +73,7 @@ def saveconfig():
 
 
 def groupadd(groupname, creator):
-    if groupname in groups:
+    if strindict(groupname, groups):
         return "Group " + groupname + " already exists"
     groups[groupname] = Group(groupname, creator, [creator])
     return "Group " + groupname + " created"
@@ -81,7 +81,7 @@ def groupadd(groupname, creator):
 
 def groupdel(groupname, executer):
     global groups
-    if groupname not in groups:
+    if strindict(groupname, groups):
         return "Group " + groupname + " does not exist"
     group = groups[groupname]
     if group.owner.lower() == executer.lower():
@@ -91,19 +91,19 @@ def groupdel(groupname, executer):
 
 
 def groupmemberadd(groupname, executer, newmember):
-    if groupname not in groups:
+    if not strinarray(groupname, groups):
         return "Group " + groupname + " does not exist"
     group = groups[groupname]
     if executer != group.owner and executer != newmember:
         return "You must be the owner of a group to add someone other than yourself. " + group.owner + " is the owner of the group " + groupname
-    if newmember in group.members:
+    if strinarray(newmember, group.members):
         return "Member " + newmember + " is already a part of group " + groupname
     group.members.append(newmember)
     return "Member " + newmember + " has been added to the group " + groupname
 
 
 def groupmemberdel(groupname, executer, member):
-    if groupname not in groups:
+    if not strindict(groupname, groups):
         return "Group " + groupname + " does not exist"
     group = groups[groupname]
     executer = executer.lower()
@@ -111,7 +111,7 @@ def groupmemberdel(groupname, executer, member):
         return "You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner"
     if executer != group.owner.lower() and executer != member.lower():
         return "You must be the owner of a group to remove someone other than yourself"
-    if member in group.members:
+    if strinarray(member, group.members):
         group.members.remove(member)
         return "Member " + member + " has been removed from the group " + groupname
     return "Member " + member + " does not exist in group " + groupname
@@ -125,7 +125,7 @@ def grouplist():
 
 
 def groupmemberlist(groupname):
-    if groupname not in groups:
+    if not strindict(groupname, groups):
         return "Group " + groupname + " does not exist"
     string = ''
     for member in groups[groupname].members:
@@ -135,9 +135,9 @@ def groupmemberlist(groupname):
 
 def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
     hostname = hostname.lower()
-    if hostname in servers:
+    if strindict(hostname, servers):
         return "Hostname " + hostname + " already exists"
-    if notifygroup not in groups:
+    if not strindict(notifygroup, groups):
         return "Group " + notifygroup + " does not exist"
     servers[hostname] = Server(hostname, executor, prettyname, statusgroup, notifygroup)
     return "Server " + hostname + " added"
@@ -145,7 +145,7 @@ def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
 
 def serverdel(hostname, executor):
     hostname = hostname.lower()
-    if hostname not in servers:
+    if not strindict(hostname, servers):
         return "Hostname " + hostname + " does not exist"
     server = servers[hostname]
     if server.owner != executor:
@@ -156,12 +156,19 @@ def serverdel(hostname, executor):
 
 def serverlist():
     msg = 'Servers:'
-    for hostname, data in servers.items():
+    for hostname in servers.keys():
         msg += '  ' + hostname
     return msg
 
 
 def serverdata(hostname):
-    if hostname not in servers:
+    if not strindict(hostname, servers):
         return "Hostname " + hostname + " does not exist"
     return servers[hostname].__str__()
+
+
+def strinarray(string, array):
+    return string.lower() in (element.lower() for element in array)
+
+def strindict(string, dict):
+    return string.lower() in (key.lower() for key in dict.keys())
