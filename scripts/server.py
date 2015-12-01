@@ -8,7 +8,7 @@ class Server(object):
     prettyname = ''
     statusgroup = ''
     notifygroup = ''
-    status = 'not available yet'
+    status = '\x033,1oppe\x03'
 
     def __init__(self, hostname, owner, prettyname, statusgroup, notifygroup):
         self.hostname = hostname

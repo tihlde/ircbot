@@ -83,13 +83,12 @@ while 1:
         sendtext(sh.executecommand(command, args, sender), recipient)
 
     if ircmsg.find('PING :') != -1:  # respond to pings
-        send('PONG ' + ircmsg[ircmsg.find(':') + 1])
+        send('PONG ' + ircmsg[ircmsg.find(':') + 1:])
 
     sh.update()
     if len(sh.updatechanges) > 0:
-        for update in sh.updatechanges:
-            serverdata = update[0]
+        for serverdata in sh.updatechanges:
             group = sh.getgroup(serverdata.notifygroup)
             for name in group.members:
-                sendtext(update[1], name)
+                sendtext('Statusendring: ' + serverdata.prettyname + ' er nå ' + serverdata.status, name)
         sh.updatechanges = []

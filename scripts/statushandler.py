@@ -43,7 +43,7 @@ def minuteupdate():
         newstatus = getstatus(host)
         if newstatus != serverdata.status:
             serverdata.status = newstatus
-            updatechanges.append([serverdata, newstatus])
+            updatechanges.append(serverdata)
     global lastupdate
     lastupdate = time.localtime()
 
