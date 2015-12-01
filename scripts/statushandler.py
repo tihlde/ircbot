@@ -131,7 +131,8 @@ def readStatuses(statusgroup):
     msg = statusgroup + ':'
     for hostname, serverdata in ch.servers.items():
         if serverdata.statusgroup == statusgroup:
-            msg += '  ' + serverdata.prettyname + ": " + serverdata.status
+            msg += ' ' + serverdata.prettyname + ": " + serverdata.status + ","
+            msg = msg[:-1]
     if len(msg) == len(statusgroup) + 1:
         msg = 'No registered servers have the statusgroup ' + statusgroup
     return msg

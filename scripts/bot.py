@@ -73,6 +73,7 @@ while 1:
             sendtext(discoreturn, channel)
         recipient = channel
 
+    # command-parsing
     angleindex = ircmsg.find('>')
     if angleindex != -1 and ircmsg[angleindex - 1] == ':':
         command = ircmsg[angleindex + 1:]
