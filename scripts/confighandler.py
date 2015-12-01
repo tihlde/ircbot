@@ -149,3 +149,16 @@ def serverdel(hostname, executor):
         return "You must be the creator of a server to delete it. Current owner is -" + server.owner
     del servers[hostname]
     return "Server " + hostname + " deleted"
+
+
+def serverlist():
+    msg = 'Servers:'
+    for hostname, data in servers.items():
+        msg += '  ' + hostname
+    return msg
+
+
+def serverdata(hostname):
+    if hostname not in servers:
+        return "Hostname " + hostname + " does not exist"
+    return servers[hostname].__str__()

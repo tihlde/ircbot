@@ -120,6 +120,12 @@ def executecommand(command, args, executor):
         elif command == 'serverdel' or command == 'sd':
             return ch.serverdel(args[0], executor)
 
+        elif command == 'serverlist' or command == 'sls':
+            return ch.serverlist()
+
+        elif command == 'serverdata' or command == 'sdt':
+            return ch.serverdata(args[0])
+
         elif command == 'servernameset' or command == 'sns':
             return 'command not supported yet'
 
@@ -131,11 +137,11 @@ def executecommand(command, args, executor):
 
         elif command == 'ping':
             return ping(args[0])
-
-        return 'Nothing to return, haraldfw sucks at programming'
+        else:
+            return 'Command ' + command + ' not supported. '
 
     except IndexError:
-        return 'Incorrent number of arguments for command' + command
+        return 'Incorrent number of arguments for command ' + command
 
 def readStatuses(statusgroup):
     msg = statusgroup + ':'
