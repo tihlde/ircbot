@@ -57,7 +57,7 @@ servers = readservers()
 
 
 def addusertogroup(user, groupname, recipient):
-    gottengroup = getElement(groupname, groups)
+    gottengroup = getdictelement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
     gottengroup.members.append(user)
@@ -74,7 +74,7 @@ def saveconfig():
 
 
 def groupadd(groupname, creator):
-    gottengroup = getElement(groupname, groups)
+    gottengroup = getdictelement(groupname, groups)
     if gottengroup != None:
         return "Group " + groupname + " already exists"
     groups[groupname] = Group(groupname, creator, [creator])
@@ -82,7 +82,7 @@ def groupadd(groupname, creator):
 
 
 def groupdel(groupname, executer):
-    gottengroup = getElement(groupname, groups)
+    gottengroup = getdictelement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
     if gottengroup.owner.lower() == executer.lower():
@@ -92,20 +92,19 @@ def groupdel(groupname, executer):
 
 
 def groupmemberadd(groupname, executer, newmember):
-    gottengroup = getElement(groupname, groups)
+    gottengroup = getdictelement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
     if executer != gottengroup.owner and executer != newmember:
         return "You must be the owner of a group to add someone other than yourself. " + gottengroup.owner + " is the owner of the group " + groupname
-    gottenmember = getElement(newmember, gottengroup.members)
-    if gottenmember != None:
+    if getindexofarrayelement(newmember, gottengroup.members) != -1:
         return "Member " + newmember + " is already a part of group " + groupname
     gottengroup.members.append(newmember)
     return "Member " + newmember + " has been added to the group " + groupname
 
 
 def groupmemberdel(groupname, executer, member):
-    gottengroup = getElement(groupname, groups)
+    gottengroup = getdictelement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
     executer = executer.lower()
@@ -113,9 +112,9 @@ def groupmemberdel(groupname, executer, member):
         return "You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner"
     if executer != gottengroup.owner.lower() and executer != member.lower():
         return "You must be the owner of a group to remove someone other than yourself"
-    gottenmember = getElement(member, gottengroup.members)
-    if gottenmember != None:
-        gottengroup.members.remove(member)
+    memberindex = getindexofarrayelement(member, gottengroup.members)
+    if memberindex != -1:
+        del gottengroup.members[memberindex]
         return "Member " + member + " has been removed from the group " + groupname
     return "Member " + member + " does not exist in group " + groupname
 
@@ -128,7 +127,7 @@ def grouplist():
 
 
 def groupmemberlist(groupname):
-    gottengroup = getElement(groupname, groups)
+    gottengroup = getdictelement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
     string = ''
@@ -138,10 +137,10 @@ def groupmemberlist(groupname):
 
 
 def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
-    gottenserver = getElement(hostname, servers)
+    gottenserver = getdictelement(hostname, servers)
     if gottenserver != None:
         return "Hostname " + hostname + " already exists"
-    gottengroup = getElement(notifygroup, groups)
+    gottengroup = getdictelement(notifygroup, groups)
     if gottengroup == None:
         return "Group " + notifygroup + " does not exist"
     servers[hostname.lower()] = Server(hostname.lower(), executor, prettyname, statusgroup, notifygroup)
@@ -149,7 +148,7 @@ def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
 
 
 def serverdel(hostname, executor):
-    gottenserver = getElement(hostname, servers)
+    gottenserver = getdictelement(hostname, servers)
     if gottenserver != None:
         return "Hostname " + hostname + " does not exist"
     if gottenserver.owner != executor:
@@ -166,14 +165,22 @@ def serverlist():
 
 
 def serverdata(hostname):
-    gottendata = getElement(hostname, servers)
+    gottendata = getdictelement(hostname, servers)
     if gottendata == None:
         return "Hostname " + hostname + " does not exist"
     return gottendata.__str__()
 
 
-def getElement(get, dict):
+def getdictelement(get, dict):
     for key, value in dict.items():
         if get.lower() == key.lower():
             return value
     return None
+
+def getindexofarrayelement(get, array):
+    i = 0
+    for element in array:
+        if element.lower() == get.lower():
+            return i
+        i += 1
+    return -1
