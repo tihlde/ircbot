@@ -8,7 +8,7 @@ class Server(object):
     prettyname = ''
     statusgroup = ''
     notifygroup = ''
-    status = ''
+    status = 'not available yet'
 
     def __init__(self, hostname, owner, prettyname, statusgroup, notifygroup):
         self.hostname = hostname
