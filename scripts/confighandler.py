@@ -139,12 +139,12 @@ def groupmemberlist(groupname):
 
 def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
     gottenserver = getElement(hostname, servers)
-    if gottenserver == None:
+    if gottenserver != None:
         return "Hostname " + hostname + " already exists"
     gottengroup = getElement(notifygroup, groups)
-    if gottengroup != None:
+    if gottengroup == None:
         return "Group " + notifygroup + " does not exist"
-    gottenserver = Server(hostname, executor, prettyname, statusgroup, notifygroup)
+    servers[hostname.lower()] = Server(hostname.lower(), executor, prettyname, statusgroup, notifygroup)
     return "Server " + hostname + " added"
 
 
