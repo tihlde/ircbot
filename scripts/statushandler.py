@@ -26,15 +26,6 @@ def getstatus(hostname):
 for host, serverdata in ch.servers.items():
     serverdata.status = getstatus(host)
 
-
-def getserverstatus(statusgroup, nick):
-    msg = ''
-    for host, serverdata in ch.servers.items():
-        if ch.servers[2].find(statusgroup) != -1:
-            msg += host + ' ' + serverdata.status + '  '
-    return msg + "Last update: " + lastupdate
-
-
 updatechanges = []
 
 
@@ -74,6 +65,7 @@ def update():
 
 def executecommand(command, args, executor):
     try:
+        command = command.lower()
         if command == 'getstatus' or command == 'gs':
             return readStatuses(args[0])
 
@@ -83,7 +75,7 @@ def executecommand(command, args, executor):
         elif command == 'groupdel' or command == 'gd':
             return ch.groupdel(args[0], executor)
 
-        elif command == 'grouplist' or command == 'gs':
+        elif command == 'grouplist' or command == 'gls':
             return ch.grouplist()
 
         elif command == 'groupmemberadd' or command == 'gma':
@@ -121,23 +113,27 @@ def executecommand(command, args, executor):
 
         elif command == 'ping':
             return ping(args[0])
+
         else:
             return 'Command ' + command + ' not supported. '
 
     except IndexError:
         return 'Incorrent number of arguments for command ' + command
 
+
 def readStatuses(statusgroup):
     msg = statusgroup + ':'
     for hostname, serverdata in ch.servers.items():
-        if serverdata.statusgroup == statusgroup:
+        if serverdata.statusgroup.lower() == statusgroup.lower():
             msg += '  ' + serverdata.prettyname + ":" + serverdata.status
     if len(msg) == len(statusgroup) + 1:
         msg = 'No registered servers have the statusgroup ' + statusgroup
     return msg
 
+
 def ping(hostname):
     return hostname + ': ' + getstatus(hostname)
+
 
 def savechanges():
     ch.saveconfig()

@@ -84,7 +84,7 @@ def groupdel(groupname, executer):
     if groupname not in groups:
         return "Group " + groupname + " does not exist"
     group = groups[groupname]
-    if group.owner == executer:
+    if group.owner.lower() == executer.lower():
         del groups[groupname]
         return "Group " + groupname + " deleted"
     return "You must be the owner of a group to delete it"
@@ -106,9 +106,10 @@ def groupmemberdel(groupname, executer, member):
     if groupname not in groups:
         return "Group " + groupname + " does not exist"
     group = groups[groupname]
-    if executer == group.owner and executer == member:
+    executer = executer.lower()
+    if executer == group.owner.lower() and executer == member.lower():
         return "You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner"
-    if executer != group.owner and executer != member:
+    if executer != group.owner.lower() and executer != member.lower():
         return "You must be the owner of a group to remove someone other than yourself"
     if member in group.members:
         group.members.remove(member)
@@ -133,6 +134,7 @@ def groupmemberlist(groupname):
 
 
 def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
+    hostname = hostname.lower()
     if hostname in servers:
         return "Hostname " + hostname + " already exists"
     if notifygroup not in groups:
@@ -142,6 +144,7 @@ def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
 
 
 def serverdel(hostname, executor):
+    hostname = hostname.lower()
     if hostname not in servers:
         return "Hostname " + hostname + " does not exist"
     server = servers[hostname]
