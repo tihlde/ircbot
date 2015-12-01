@@ -60,7 +60,7 @@ def addusertogroup(user, groupname, recipient):
     gottengroup = getElement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
-    groups[groupname].members.append(user)
+    gottengroup.members.append(user)
     return "User " + user + " has been added to group " + groupname, recipient
 
 
@@ -85,9 +85,8 @@ def groupdel(groupname, executer):
     gottengroup = getElement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
-    group = groups[groupname]
-    if group.owner.lower() == executer.lower():
-        del groups[groupname]
+    if gottengroup.owner.lower() == executer.lower():
+        del groups[gottengroup.groupname]
         return "Group " + groupname + " deleted"
     return "You must be the owner of a group to delete it"
 
@@ -96,13 +95,12 @@ def groupmemberadd(groupname, executer, newmember):
     gottengroup = getElement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
-    group = groups[groupname]
-    if executer != group.owner and executer != newmember:
-        return "You must be the owner of a group to add someone other than yourself. " + group.owner + " is the owner of the group " + groupname
-    gottenmember = getElement(newmember, group.members)
+    if executer != gottengroup.owner and executer != newmember:
+        return "You must be the owner of a group to add someone other than yourself. " + gottengroup.owner + " is the owner of the group " + groupname
+    gottenmember = getElement(newmember, gottengroup.members)
     if gottenmember != None:
         return "Member " + newmember + " is already a part of group " + groupname
-    group.members.append(newmember)
+    gottengroup.members.append(newmember)
     return "Member " + newmember + " has been added to the group " + groupname
 
 
@@ -110,15 +108,14 @@ def groupmemberdel(groupname, executer, member):
     gottengroup = getElement(groupname, groups)
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
-    group = groups[groupname]
     executer = executer.lower()
-    if executer == group.owner.lower() and executer == member.lower():
+    if executer == gottengroup.owner.lower() and executer == member.lower():
         return "You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner"
-    if executer != group.owner.lower() and executer != member.lower():
+    if executer != gottengroup.owner.lower() and executer != member.lower():
         return "You must be the owner of a group to remove someone other than yourself"
-    gottenmember = getElement(member, group.members)
+    gottenmember = getElement(member, gottengroup.members)
     if gottenmember != None:
-        group.members.remove(member)
+        gottengroup.members.remove(member)
         return "Member " + member + " has been removed from the group " + groupname
     return "Member " + member + " does not exist in group " + groupname
 
@@ -135,7 +132,7 @@ def groupmemberlist(groupname):
     if gottengroup == None:
         return "Group " + groupname + " does not exist"
     string = ''
-    for member in groups[groupname].members:
+    for member in gottengroup.members:
         string += "-" + member + " "
     return string
 
@@ -152,13 +149,12 @@ def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
 
 
 def serverdel(hostname, executor):
-    gottendata = getElement(hostname, servers)
-    if gottendata != None:
+    gottenserver = getElement(hostname, servers)
+    if gottenserver != None:
         return "Hostname " + hostname + " does not exist"
-    server = servers[hostname]
-    if server.owner != executor:
-        return "You must be the creator of a server to delete it. Current owner is -" + server.owner
-    del servers[hostname]
+    if gottenserver.owner != executor:
+        return "You must be the creator of a server to delete it. Current owner is -" + gottenserver.owner
+    del servers[gottenserver.hostname]
     return "Server " + hostname + " deleted"
 
 
