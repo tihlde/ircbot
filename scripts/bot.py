@@ -35,7 +35,7 @@ def requestnames():
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ircsock.connect((ircserver, 6667))
-send('USER ' + botnick + ' ' + botnick + ' ' + ircserver + ' : pybot')
+send('USER ' + botnick + ' ' + botnick + ' ' + ircserver + ' : Falkner, from Violet City')
 send('NICK ' + botnick)
 
 send('JOIN ' + channel + ' ' + password)  # join channel
