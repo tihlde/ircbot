@@ -15,22 +15,6 @@ lastupdate = time.localtime()
 updateMinute = time.strftime('%M')
 updateDay = time.strftime('%d')
 
-commands = ['getstatus', 'gs',
-            'groupadd', 'ga',
-            'groupdel', 'gd',
-            'grouplist', 'gls',
-            'groupmemberadd', 'gma',
-            'groupmembderdel', 'gmd',
-            'groupmemberlist', 'gmls',
-            'groupownerset', 'gos',
-            'serveradd', 'sa',
-            'serverdel', 'sd',
-            'servernameset', 'sns',
-            'servernotifyset', 'sngs',
-            'serverstatusset', 'ssgs',
-            'ping'
-            ]
-
 
 def getstatus(hostname):
     if os.system('ping -c 1 -i 0.2 ' + hostname) == 0:
