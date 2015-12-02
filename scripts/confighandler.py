@@ -125,7 +125,7 @@ def grouplist():
 
 def groupmemberlist(groupname):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup:
+    if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
     return ' -' + ' -'.join(member for member in gottengroup.members)
 
