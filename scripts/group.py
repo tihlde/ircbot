@@ -3,8 +3,8 @@ __author__ = 'Harald Floor Wilhelmsen'
 
 
 class Group(object):
-    name = ""
-    owner = ""
+    name = ''
+    owner = ''
     members = []
 
     def __init__(self, name, owner, members):
@@ -13,9 +13,9 @@ class Group(object):
         self.members = members
 
     def __str__(self):
-        string = self.name + " " + self.owner + ":"
+        string = self.name + ' ' + self.owner + ':'
         for member in self.members:
-            string += " " + member
+            string += ' ' + member
         return string
 
     def __repr__(self):

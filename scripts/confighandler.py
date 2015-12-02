@@ -58,103 +58,98 @@ servers = readservers()
 
 def addusertogroup(user, groupname, recipient):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup == None:
-        return "Group " + groupname + " does not exist"
+    if not gottengroup:
+        return 'Group ' + groupname + ' does not exist'
     gottengroup.members.append(user)
-    return "User " + user + " has been added to group " + groupname, recipient
+    return 'User ' + user + ' has been added to group ' + groupname, recipient
 
 
 def saveconfig():
-    configfile = open("config/servers", "w")
+    configfile = open('config/servers', 'w')
     for host, serverobject in servers.items():
         configfile.write(serverobject.__str__() + '\n')
-    configfile = open("config/groups", "w")
+    configfile = open('config/groups', 'w')
     for groupname, groupobject in groups.items():
         configfile.write(groupobject.__str__() + '\n')
 
 
 def groupadd(groupname, creator):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup != None:
-        return "Group " + groupname + " already exists"
+    if gottengroup:
+        return 'Group ' + groupname + ' already exists'
     groups[groupname] = Group(groupname, creator, [creator])
-    return "Group " + groupname + " created"
+    return 'Group ' + groupname + ' created'
 
 
 def groupdel(groupname, executer):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup == None:
-        return "Group " + groupname + " does not exist"
+    if not gottengroup:
+        return 'Group ' + groupname + ' does not exist'
     if gottengroup.owner.lower() == executer.lower():
         del groups[gottengroup.groupname]
-        return "Group " + groupname + " deleted"
-    return "You must be the owner of a group to delete it"
+        return 'Group ' + groupname + ' deleted'
+    return 'You must be the owner of a group to delete it'
 
 
 def groupmemberadd(groupname, executer, newmember):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup == None:
-        return "Group " + groupname + " does not exist"
+    if not gottengroup:
+        return 'Group ' + groupname + ' does not exist'
     if executer != gottengroup.owner and executer != newmember:
-        return "You must be the owner of a group to add someone other than yourself. " + gottengroup.owner + " is the owner of the group " + groupname
+        return 'You must be the owner of a group to add someone other than yourself. ' + gottengroup.owner + ' is the owner of the group ' + groupname
     if getindexofarrayelement(newmember, gottengroup.members) != -1:
-        return "Member " + newmember + " is already a part of group " + groupname
+        return 'Member ' + newmember + ' is already a part of group ' + groupname
     gottengroup.members.append(newmember)
-    return "Member " + newmember + " has been added to the group " + groupname
+    return 'Member ' + newmember + ' has been added to the group ' + groupname
 
 
 def groupmemberdel(groupname, executer, member):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup == None:
-        return "Group " + groupname + " does not exist"
+    if not gottengroup:
+        return 'Group ' + groupname + ' does not exist'
     executer = executer.lower()
     if executer == gottengroup.owner.lower() and executer == member.lower():
-        return "You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner"
+        return 'You cannot remove yourself from a group while you are still the owner, use .groupownerset to set a new owner'
     if executer != gottengroup.owner.lower() and executer != member.lower():
-        return "You must be the owner of a group to remove someone other than yourself"
+        return 'You must be the owner of a group to remove someone other than yourself'
     memberindex = getindexofarrayelement(member, gottengroup.members)
     if memberindex != -1:
         del gottengroup.members[memberindex]
-        return "Member " + member + " has been removed from the group " + groupname
-    return "Member " + member + " does not exist in group " + groupname
+        return 'Member ' + member + ' has been removed from the group ' + groupname
+    return 'Member ' + member + ' does not exist in group ' + groupname
 
 
 def grouplist():
-    string = ''
-    for groupname, group in groups.items():
-        string += groupname + ' '
-    return string
+    return ' '.join(group for group in groups)
 
 
 def groupmemberlist(groupname):
     gottengroup = getdictelement(groupname, groups)
-    if gottengroup == None:
-        return "Group " + groupname + " does not exist"
-    string = ''
-    for member in gottengroup.members:
-        string += "-" + member + " "
-    return string
+    if gottengroup:
+        return 'Group ' + groupname + ' does not exist'
+    return ' -' + ' -'.join(member for member in gottengroup.members)
 
 
 def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
     gottenserver = getdictelement(hostname, servers)
-    if gottenserver != None:
-        return "Hostname " + hostname + " already exists"
+    if gottenserver:
+        return 'Hostname ' + hostname + ' already exists'
     gottengroup = getdictelement(notifygroup, groups)
-    if gottengroup == None:
-        return "Group " + notifygroup + " does not exist"
-    servers[hostname.lower()] = Server(hostname.lower(), executor, prettyname, statusgroup, notifygroup)
-    return "Server " + hostname + " added"
+    if not gottengroup:
+        return 'Group ' + notifygroup + ' does not exist'
+    servers[hostname.lower()] = Server(hostname.lower(), executor, prettyname, statusgroup,
+        notifygroup)
+    return 'Server ' + hostname + ' added'
 
 
 def serverdel(hostname, executor):
     gottenserver = getdictelement(hostname, servers)
-    if gottenserver != None:
-        return "Hostname " + hostname + " does not exist"
+    if not gottenserver:
+        return 'Hostname ' + hostname + ' does not exist'
     if gottenserver.owner != executor:
-        return "You must be the creator of a server to delete it. Current owner is -" + gottenserver.owner
+        return 'You must be the creator of a server to delete it. Current owner is -' + gottenserver.owner
     del servers[gottenserver.hostname]
-    return "Server " + hostname + " deleted"
+    return 'Server ' + hostname + ' deleted'
 
 
 def serverlist():
@@ -166,8 +161,8 @@ def serverlist():
 
 def serverdata(hostname):
     gottendata = getdictelement(hostname, servers)
-    if gottendata == None:
-        return "Hostname " + hostname + " does not exist"
+    if not gottendata:
+        return 'Hostname ' + hostname + ' does not exist'
     return gottendata.__str__()
 
 
@@ -176,6 +171,7 @@ def getdictelement(get, dict):
         if get.lower() == key.lower():
             return value
     return None
+
 
 def getindexofarrayelement(get, array):
     i = 0

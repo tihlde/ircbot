@@ -77,8 +77,8 @@ while 1:
     angleindex = ircmsg.find('>')
     if angleindex != -1 and ircmsg[angleindex - 1] == ':':
         command = ircmsg[angleindex + 1:]
-        argsstart = command.find(" ")
-        args = [x.replace(" ", '') for x in command[argsstart:].strip().split(' ')]
+        argsstart = command.find(' ')
+        args = [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')]
         command = command[:argsstart].strip()
         sendtext(sh.executecommand(command, args, sender), recipient)
 
@@ -90,5 +90,6 @@ while 1:
         for serverdata in sh.updatechanges:
             group = sh.getgroup(serverdata.notifygroup)
             for name in group.members:
-                sendtext('Statusendring: ' + serverdata.prettyname + ' er nå ' + serverdata.status, name)
+                sendtext('Statusendring: ' + serverdata.prettyname
+                         + ' er nå ' + serverdata.status, name)
         sh.updatechanges = []
