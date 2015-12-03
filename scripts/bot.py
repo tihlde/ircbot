@@ -59,6 +59,9 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
+    if ircmsg.contains('NOTICE'):
+        continue
+
     if ircmsg:
         print('RECEIVED')
         print(ircmsg)  # print received message

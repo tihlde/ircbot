@@ -18,7 +18,10 @@ updateMinute = time.strftime('%M')
 
 
 def gethelp(args):
-    command = args[1]
+    if len(args) < 2:
+        command = 'help'
+    else:
+        command = args[1]
     if command not in commands:
         return 'No helpmessage exists for ' + command
     return commands[command].helpmsg
@@ -35,6 +38,12 @@ def readStatuses(args):
     return msg
 
 
+def listcommands(args):
+    return 'commands readstatuses ping groupadd groupdel grouplist groupmemberadd ' \
+           'groupmemberdel groupmemberlist groupownerset serveradd serverdel ' \
+           'serverlist serverdata servernameset servernotifyset serverstatusset'
+
+
 def ping(args):
     hostname = args[1]
     return hostname + ': ' + getstatus(hostname)
@@ -44,9 +53,11 @@ parser = Helpparser('helpmsg')
 
 commands = {
     'help': Command(gethelp, parser.gethelp('help')),
-    'getstatus': Command(readStatuses, parser.gethelp('getstatus')),
+    'commands': Command(listcommands, parser.gethelp('commands')),
     'ping': Command(ping, parser.gethelp('ping'))
 }
+commands.update(commands.fromkeys(
+    ['getstatus', 'gs'], Command(readStatuses, parser.gethelp('getstatus'))))
 commands.update(commands.fromkeys(
     ['groupadd', 'ga'], Command(ch.groupadd, parser.gethelp('groupadd'))))
 commands.update(commands.fromkeys(
