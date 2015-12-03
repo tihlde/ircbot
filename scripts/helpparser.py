@@ -10,7 +10,6 @@ class Helpparser(object):
             for line in file:
                 splitindex = line.find(':')
                 strings = [line[:splitindex], line[splitindex + 1:].rstrip('\n')]
-                print(strings)
                 self.helps[strings[0]] = strings[1]
 
     def gethelp(self, command):
