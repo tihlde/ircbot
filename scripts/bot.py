@@ -59,7 +59,7 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
-    if ircmsg.contains('NOTICE'):
+    if ircmsg.find('NOTICE') != -1:
         continue
 
     if ircmsg:
