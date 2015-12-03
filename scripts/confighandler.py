@@ -23,7 +23,7 @@ def readdata(filestring):
     dataobjects = []
     with open(filestring, 'r') as file:
         for line in file:
-            if line == '':
+            if not line:
                 continue
             splitindex = line.find(': ')
             ident = striplist(line[:splitindex].strip().split(' '))
@@ -174,7 +174,7 @@ def serverdel(args):
     return 'Server ' + hostname + ' deleted'
 
 
-def serverlist():
+def serverlist(args):
     msg = 'Servers:'
     for hostname in servers.keys():
         msg += '  ' + hostname

@@ -6,6 +6,8 @@ import os
 import time
 
 import confighandler as ch
+from command import Command
+from helpparser import Helpparser
 
 
 upStatus = '\x033,1oppe\x03'
@@ -13,7 +15,13 @@ downStatus = '\x030,4NEDE\x03'
 
 lastupdate = time.localtime()
 updateMinute = time.strftime('%M')
-updateDay = time.strftime('%d')
+
+
+def gethelp(args):
+    command = args[1]
+    if command not in commands:
+        return 'No helpmessage exists for ' + command
+    return commands[command].helpmsg
 
 
 def readStatuses(args):
@@ -32,78 +40,43 @@ def ping(args):
     return hostname + ': ' + getstatus(hostname)
 
 
-helpmsgs = {
-    'getstatus': 'Returns a string representing with the statuses of the servers in the given statusgroup.',
-    'ping': 'Returns the status of the given hostname',
-    'help': 'Privilege: A hash ("#") signifies a privilege, for example "#owner" would signify you must be the owner to execute the command. '
-            + 'Format: A cash ("$") signifies the formatting of the arguments of the command.'
-}
-helpmsgs.update(helpmsgs.fromkeys(
-    ['groupadd', 'ga'],
-    'Adds a group with the given name. You are automatically added to the group and set as the owner. $groupname'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['groupdel', 'gd'],
-    'Deletes the group with the given name. #owner'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['grouplist', 'gls'],
-    'A list of the groups that exist'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['groupmemberadd', 'gma'],
-    'Adds the given username to the given group. $groupname username'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['groupmemberdel', 'gmd'],
-    'Removes the given user from the given group. $groupname username'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['groupmemberlist', 'gmls'],
-    'Lists the members of the given group. $groupname'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['groupownerset', 'gos'],
-    'Sets a new owner to the given group. #owner $groupname newowner'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['serveradd', 'sa'],
-    'Adds a new server with the given data. $hostname prettyname statusgroup membergroup'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['serverdel', 'sa'],
-    'Deletes the server with the given hostname. #owner'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['serverdata', 'sdt'],
-    'Lists the data for the given server. $hostname'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['servernameset', 'sns'],
-    'Sets a new name for the given server. #owner'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['servernotifyset', 'sngs'],
-    'Sets the notifygroup of the given server. #owner $hostname newgroup'))
-helpmsgs.update(helpmsgs.fromkeys(
-    ['serverstatusset', 'ssgs'],
-    'Sets the statugroup of the given server. #owner $hostname newgroup'))
-
-
-def gethelp(args):
-    command = args[1]
-    if command not in helpmsgs:
-        return 'No helpmessage exists for ' + command
-    return helpmsgs[command]
-
+parser = Helpparser('helpmsg')
 
 commands = {
-    'getstatus': readStatuses,
-    'ping': ping,
-    'help': gethelp
+    'help': Command(gethelp, parser.gethelp('help')),
+    'getstatus': Command(readStatuses, parser.gethelp('getstatus')),
+    'ping': Command(ping, parser.gethelp('ping'))
 }
-commands.update(commands.fromkeys(['groupadd', 'ga'], ch.groupadd))
-commands.update(commands.fromkeys(['groupdel', 'gd'], ch.groupdel))
-commands.update(commands.fromkeys(['grouplist', 'gls'], ch.grouplist))
-commands.update(commands.fromkeys(['groupmemberadd', 'gma'], ch.groupmemberadd))
-commands.update(commands.fromkeys(['groupmemberdel', 'gmd'], ch.groupmemberdel))
-commands.update(commands.fromkeys(['groupmemberlist', 'gmls'], ch.groupmemberlist))
-commands.update(commands.fromkeys(['groupownerset', 'gos'], ch.groupownerset))
-helpmsgs.update(helpmsgs.fromkeys(['serveradd', 'sa'], ch.serveradd))
-helpmsgs.update(helpmsgs.fromkeys(['serverdel', 'sd'], ch.serverdel))
-commands.update(commands.fromkeys(['serverdata', 'sdt'], ch.serverdata))
-commands.update(commands.fromkeys(['servernameset', 'sns'], ch.servernameset))
-commands.update(commands.fromkeys(['servernotifyset', 'sngs'], ch.servernotifysetset))
-commands.update(commands.fromkeys(['serverstatusset', 'ssgs'], ch.serverstatusset))
+commands.update(commands.fromkeys(
+    ['groupadd', 'ga'], Command(ch.groupadd, parser.gethelp('groupadd'))))
+commands.update(commands.fromkeys(
+    ['groupdel', 'gd'], Command(ch.groupdel, parser.gethelp('groupdel'))))
+commands.update(commands.fromkeys(
+    ['grouplist', 'gls'], Command(ch.grouplist, parser.gethelp('grouplist'))))
+commands.update(commands.fromkeys(
+    ['groupmemberadd', 'gma'], Command(ch.groupmemberadd, parser.gethelp('groupmemberadd'))))
+commands.update(commands.fromkeys(
+    ['groupmemberdel', 'gmd'], Command(ch.groupmemberdel, parser.gethelp('groupmemberdel'))))
+commands.update(commands.fromkeys(
+    ['groupmemberlist', 'gmls'], Command(ch.groupmemberlist, parser.gethelp('groupmemberlist'))))
+commands.update(commands.fromkeys(
+    ['groupownerset', 'gos'], Command(ch.groupownerset, parser.gethelp('groupownerset'))))
+commands.update(commands.fromkeys(
+    ['serveradd', 'sa'], Command(ch.serveradd, parser.gethelp('serveradd'))))
+commands.update(commands.fromkeys(
+    ['serverdel', 'sd'], Command(ch.serverdel, parser.gethelp('serverdel'))))
+commands.update(commands.fromkeys(
+    ['serverlist', 'sls'], Command(ch.serverlist, parser.gethelp('serverlist'))))
+commands.update(commands.fromkeys(
+    ['serverdata', 'sdt'], Command(ch.serverdata, parser.gethelp('serverdata'))))
+commands.update(commands.fromkeys(
+    ['servernameset', 'sns'], Command(ch.servernameset, parser.gethelp('servernameset'))))
+commands.update(commands.fromkeys(
+    ['servernotifyset', 'sngs'], Command(ch.servernotifysetset, parser.gethelp('servernotifyset'))))
+commands.update(commands.fromkeys(
+    ['serverstatusset', 'ssgs'], Command(ch.serverstatusset, parser.gethelp('serverstatusset'))))
+
+parser = None  # parse is no longer needed
 
 
 def getstatus(hostname):
@@ -146,12 +119,6 @@ def update():
         threadupdate()
         updateMinute = minute
 
-        # day = time.strftime('%d')
-        # global updateDay
-        # if day != updateDay:
-        #     midnightreminder()
-        #     updateDay = day
-
 
 def executecommand(command, args, executor):
     try:
@@ -159,7 +126,7 @@ def executecommand(command, args, executor):
         if command not in commands:
             return 'Invalid command ' + command
         args.insert(0, executor)
-        return commands[command](args)
+        return commands[command].execute(args)
 
     except IndexError:
         return 'Incorrent number of arguments for command ' + command
