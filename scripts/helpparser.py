@@ -5,6 +5,7 @@ __author__ = 'Harald Floor Wilhelmsen'
 class Helpparser(object):
 
     def __init__(self, filestring):
+        self.helps = {}
         with open(filestring, 'r') as file:
             for line in file:
                 splitindex = line.find(':')
