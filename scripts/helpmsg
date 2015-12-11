@@ -1,16 +1,16 @@
-help:A hash ("#") signifies needed privilege to execute the command. A cash ("$") signifies the formatting of the arguments of the command. An ampersand ("&") signifies the abbreviation of the command.
+help:>help <command>. A hash ("#") signifies needed privilege to execute the command. A cash ("$") signifies the formatting of the arguments of the command. An ampersand ("&") signifies the abbreviation of the command.
 commands:commands readstatuses ping groupadd groupdel grouplist groupmemberadd groupmemberdel groupmemberlist groupownerset serveradd serverdel serverlist serverdata servernameset servernotifyset serverstatusset
-getstatus:Returns a string representing with the statuses of the servers in the given statusgroup. &gs
-ping:Returns the status of the given hostname
+getstatus:Returns a string representing with the statuses of the servers in the given statusgroup. $statusgroup &gs
+ping:Returns the status of the given hostname. $hostname
 groupadd:Adds a group with the given name. You are automatically added to the group and set as the owner. $groupname &ga
-groupdel:Deletes the group with the given name. #owner &gd
+groupdel:Deletes the group with the given name. #owner $groupname &gd
 grouplist:A list of the groups that exist. &gls
 groupmemberadd:Adds the given username to the given group. $groupname username &gma
 groupmemberdel:Removes the given user from the given group. $groupname username &gmd
 groupmemberlist:Lists the members of the given group. $groupname &gmls
 groupownerset:Sets a new owner to the given group. #owner $groupname newowner &gos
 serveradd:Adds a new server with the given data. $hostname prettyname statusgroup membergroup &sa
-serverdel:Deletes the server with the given hostname. #owner &sd
+serverdel:Deletes the server with the given hostname. #owner $hostname &sd
 serverlist:Lists the hostname of all servers added. &sls
 serverdata:Lists the data for the given server. $hostname &sdt
 servernameset:Sets a new name for the given server. #owner &sns
