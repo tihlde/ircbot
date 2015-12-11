@@ -13,6 +13,6 @@ serveradd:Adds a new server with the given data with you as the owner. $hostname
 serverdel:Deletes the server with the given hostname. #owner $hostname &sd
 serverlist:Lists the hostname of all servers added. &sls
 serverdata:Lists the data for the given hostname. $hostname &sdt
-servernameset:Sets a new name for the given server. #owner &sns
+servernameset:Sets a new name for the given server. #owner $hostname newname &sns
 servernotifyset:Sets the notifygroup of the given server. #owner $hostname newgroup &sngs
 serverstatusset:Sets the statugroup of the given server. #owner $hostname newgroup &ssgs
