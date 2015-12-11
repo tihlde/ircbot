@@ -18,7 +18,7 @@ updateMinute = time.strftime('%M')
 
 
 def gethelp(args):
-    if len(args) < 2:
+    if len(args) < 2: # this does not seem to work
         command = 'help'
     else:
         command = args[1]
@@ -39,6 +39,7 @@ def readStatuses(args):
 
 
 def listcommands(args):
+    # find better way of doing this
     return 'commands readstatuses ping groupadd groupdel grouplist groupmemberadd ' \
            'groupmemberdel groupmemberlist groupownerset serveradd serverdel ' \
            'serverlist serverdata servernameset servernotifyset serverstatusset'
@@ -87,7 +88,7 @@ commands.update(commands.fromkeys(
 commands.update(commands.fromkeys(
     ['serverstatusset', 'ssgs'], Command(ch.serverstatusset, parser.gethelp('serverstatusset'))))
 
-parser = None  # parse is no longer needed
+parser = None  # parser is no longer needed
 
 
 def getstatus(hostname):

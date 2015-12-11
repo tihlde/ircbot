@@ -3,7 +3,6 @@ __author__ = 'Harald Floor Wilhelmsen'
 
 
 class Helpparser(object):
-    helps = {}
 
     def __init__(self, filestring):
         with open(filestring, 'r') as file:

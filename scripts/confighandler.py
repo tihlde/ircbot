@@ -6,8 +6,6 @@ from server import Server
 
 
 class Dataobject(object):
-    ident = []
-    data = []
 
     def __init__(self, ident, data):
         self.ident = ident
