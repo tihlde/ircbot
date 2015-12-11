@@ -81,7 +81,8 @@ while 1:
     if angleindex != -1 and ircmsg[angleindex - 1] == ':':
         command = ircmsg[angleindex + 1:]
         argsstart = command.find(' ')
-        args = [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')]
+        # Splits args-segment of string into strings and removes empty entries
+        args = filter(None, [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')])
         command = command[:argsstart].strip()
         sendtext(sh.executecommand(command, args, sender), recipient)
 
