@@ -1,5 +1,5 @@
 help:>help <command>. A hash ("#") signifies needed privilege to execute the command. A cash ("$") signifies the formatting of the arguments of the command. An ampersand ("&") signifies the abbreviation of the command.
-commands:commands readstatuses ping groupadd groupdel grouplist groupmemberadd groupmemberdel groupmemberlist groupownerset serveradd serverdel serverlist serverdata servernameset servernotifyset serverstatusset
+commands:commands getstatus ping groupadd groupdel grouplist groupmemberadd groupmemberdel groupmemberlist groupownerset serveradd serverdel serverlist serverdata servernameset servernotifyset serverstatusset
 getstatus:Returns a string representing with the statuses of the servers in the given statusgroup. $statusgroup &gs
 ping:Returns the status of the given hostname. $hostname
 groupadd:Adds a group with the given name. You are automatically added to the group and set as the owner. $groupname &ga
