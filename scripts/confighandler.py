@@ -6,7 +6,6 @@ from server import Server
 
 
 class Dataobject(object):
-
     def __init__(self, ident, data):
         self.ident = ident
         self.data = data
@@ -183,20 +182,44 @@ def serverdata(args):
     hostname = args[1]
     gottendata = getdictelement(hostname, servers)
     if not gottendata:
-        return 'Hostname ' + hostname + ' does not exist'
+        return 'Hostname is not registered'
     return gottendata.__str__()
 
 
 def servernameset(args):
-    return 'command not supported yet'
+    executer = args[0]
+    gottenserver = getdictelement(args[1], servers)
+    if not gottenserver:
+        return 'Hostname is not registered'
+    if gottenserver.owner != executer:
+        return 'You are not the owner of ' + gottenserver.hostname
+    newname = args[2]
+    gottenserver.prettyname = newname
+    return 'Nameset successful. Name of ' + gottenserver.hostname + ' is now: ' + gottenserver.prettyname
 
 
 def servernotifysetset(args):
-    return 'command not supported yet'
+    executer = args[0]
+    gottenserver = getdictelement(args[1], servers)
+    if not gottenserver:
+        return 'Hostname is not registered'
+    if gottenserver.owner != executer:
+        return 'You are not the owner of ' + gottenserver.hostname
+    newnotify = args[2]
+    gottenserver.notifygroup = newnotify
+    return 'Nameset successful. Notifygroup of ' + gottenserver.hostname + ' is now: ' + gottenserver.notifygroup
 
 
 def serverstatusset(args):
-    return 'command not supported yet'
+    executer = args[0]
+    gottenserver = getdictelement(args[1], servers)
+    if not gottenserver:
+        return 'Hostname is not registered'
+    if gottenserver.owner != executer:
+        return 'You are not the owner of ' + gottenserver.hostname
+    newstatus = args[2]
+    gottenserver.statusgroup = newstatus
+    return 'Nameset successful. statusgroup of ' + gottenserver.hostname + ' is now: ' + gottenserver.statusgroup
 
 
 def getdictelement(get, dict):
