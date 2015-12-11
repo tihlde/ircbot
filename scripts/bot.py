@@ -22,7 +22,7 @@ def send(msg):
 
 
 def sendtext(msg, rec):
-    send('PRIVMSG ' + rec + ' :' + msg)
+    send('NOTICE ' + rec + ' :' + msg)
 
 
 def findname(text):
@@ -59,7 +59,10 @@ while 1:
     ircmsg = ircsock.recv(2048)  # receive data from the server
     ircmsg = ircmsg.strip('\n')  # removing linebreaks.
 
-    if len(ircmsg) > 0:
+    if ircmsg.find('NOTICE') != -1:
+        continue
+
+    if ircmsg:
         print('RECEIVED')
         print(ircmsg)  # print received message
 
@@ -78,7 +81,8 @@ while 1:
     if angleindex != -1 and ircmsg[angleindex - 1] == ':':
         command = ircmsg[angleindex + 1:]
         argsstart = command.find(' ')
-        args = [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')]
+        # Splits args-segment of string into strings and removes empty entries
+        args = filter(None, [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')])
         command = command[:argsstart].strip()
         sendtext(sh.executecommand(command, args, sender), recipient)
 
@@ -86,7 +90,7 @@ while 1:
         send('PONG ' + ircmsg[ircmsg.find(':') + 1:])
 
     sh.update()
-    if len(sh.updatechanges) > 0:
+    if sh.updatechanges:
         for serverdata in sh.updatechanges:
             group = sh.getgroup(serverdata.notifygroup)
             for name in group.members:

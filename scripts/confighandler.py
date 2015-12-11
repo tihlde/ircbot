@@ -6,8 +6,6 @@ from server import Server
 
 
 class Dataobject(object):
-    ident = []
-    data = []
 
     def __init__(self, ident, data):
         self.ident = ident
@@ -23,7 +21,7 @@ def readdata(filestring):
     dataobjects = []
     with open(filestring, 'r') as file:
         for line in file:
-            if line == '':
+            if not line:
                 continue
             splitindex = line.find(': ')
             ident = striplist(line[:splitindex].strip().split(' '))
@@ -73,15 +71,19 @@ def saveconfig():
         configfile.write(groupobject.__str__() + '\n')
 
 
-def groupadd(groupname, creator):
-    gottengroup = getdictelement(groupname, groups)
+def groupadd(args):
+    executer = args[0]
+    groupname = args[1]
+    gottengroup = getdictelement(args[1], groups)
     if gottengroup:
         return 'Group ' + groupname + ' already exists'
-    groups[groupname] = Group(groupname, creator, [creator])
+    groups[groupname] = Group(groupname, executer, [executer])
     return 'Group ' + groupname + ' created'
 
 
-def groupdel(groupname, executer):
+def groupdel(args):
+    executer = args[0]
+    groupname = args[1]
     gottengroup = getdictelement(groupname, groups)
     if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
@@ -91,7 +93,10 @@ def groupdel(groupname, executer):
     return 'You must be the owner of a group to delete it'
 
 
-def groupmemberadd(groupname, executer, newmember):
+def groupmemberadd(args):
+    executer = args[0]
+    groupname = args[1]
+    newmember = args[2]
     gottengroup = getdictelement(groupname, groups)
     if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
@@ -103,7 +108,10 @@ def groupmemberadd(groupname, executer, newmember):
     return 'Member ' + newmember + ' has been added to the group ' + groupname
 
 
-def groupmemberdel(groupname, executer, member):
+def groupmemberdel(args):
+    executer = args[0]
+    groupname = args[1]
+    member = args[2]
     gottengroup = getdictelement(groupname, groups)
     if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
@@ -119,51 +127,76 @@ def groupmemberdel(groupname, executer, member):
     return 'Member ' + member + ' does not exist in group ' + groupname
 
 
-def grouplist():
+def grouplist(args):
     return ' '.join(group for group in groups)
 
 
-def groupmemberlist(groupname):
+def groupmemberlist(args):
+    groupname = args[1]
     gottengroup = getdictelement(groupname, groups)
     if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
     return ' -' + ' -'.join(member for member in gottengroup.members)
 
 
-def serveradd(hostname, executor, prettyname, statusgroup, notifygroup):
+def groupownerset(args):
+    return 'command not supported yet'
+
+
+def serveradd(args):
+    executer = args[0]
+    hostname = args[1]
+    prettyname = args[2]
+    statusgroup = args[3]
+    notifygroup = args[4]
     gottenserver = getdictelement(hostname, servers)
     if gottenserver:
         return 'Hostname ' + hostname + ' already exists'
     gottengroup = getdictelement(notifygroup, groups)
     if not gottengroup:
         return 'Group ' + notifygroup + ' does not exist'
-    servers[hostname.lower()] = Server(hostname.lower(), executor, prettyname, statusgroup,
+    servers[hostname.lower()] = Server(hostname.lower(), executer, prettyname, statusgroup,
         notifygroup)
     return 'Server ' + hostname + ' added'
 
 
-def serverdel(hostname, executor):
+def serverdel(args):
+    executer = args[0]
+    hostname = args[1]
     gottenserver = getdictelement(hostname, servers)
     if not gottenserver:
         return 'Hostname ' + hostname + ' does not exist'
-    if gottenserver.owner != executor:
+    if gottenserver.owner != executer:
         return 'You must be the creator of a server to delete it. Current owner is -' + gottenserver.owner
     del servers[gottenserver.hostname]
     return 'Server ' + hostname + ' deleted'
 
 
-def serverlist():
+def serverlist(args):
     msg = 'Servers:'
     for hostname in servers.keys():
         msg += '  ' + hostname
     return msg
 
 
-def serverdata(hostname):
+def serverdata(args):
+    hostname = args[1]
     gottendata = getdictelement(hostname, servers)
     if not gottendata:
         return 'Hostname ' + hostname + ' does not exist'
     return gottendata.__str__()
+
+
+def servernameset(args):
+    return 'command not supported yet'
+
+
+def servernotifysetset(args):
+    return 'command not supported yet'
+
+
+def serverstatusset(args):
+    return 'command not supported yet'
 
 
 def getdictelement(get, dict):

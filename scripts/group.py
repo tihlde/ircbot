@@ -3,9 +3,6 @@ __author__ = 'Harald Floor Wilhelmsen'
 
 
 class Group(object):
-    name = ''
-    owner = ''
-    members = []
 
     def __init__(self, name, owner, members):
         self.name = name

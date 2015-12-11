@@ -6,6 +6,8 @@ import os
 import time
 
 import confighandler as ch
+from command import Command
+from helpparser import Helpparser
 
 
 upStatus = '\x033,1oppe\x03'
@@ -13,7 +15,80 @@ downStatus = '\x030,4NEDE\x03'
 
 lastupdate = time.localtime()
 updateMinute = time.strftime('%M')
-updateDay = time.strftime('%d')
+
+
+def gethelp(args):
+    if len(args) < 2: # this does not seem to work
+        command = 'help'
+    else:
+        command = args[1]
+    if command not in commands:
+        return 'No helpmessage exists for ' + command
+    return commands[command].helpmsg
+
+
+def readStatuses(args):
+    statusgroup = args[1]
+    msg = statusgroup + ':'
+    for hostname, serverdata in ch.servers.items():
+        if serverdata.statusgroup.lower() == statusgroup.lower():
+            msg += '  ' + serverdata.prettyname + ':' + serverdata.status
+    if len(msg) == len(statusgroup) + 1:
+        msg = 'No registered servers have the statusgroup ' + statusgroup
+    return msg
+
+
+def listcommands(args):
+    # find better way of doing this
+    return 'commands readstatuses ping groupadd groupdel grouplist groupmemberadd ' \
+           'groupmemberdel groupmemberlist groupownerset serveradd serverdel ' \
+           'serverlist serverdata servernameset servernotifyset serverstatusset'
+
+
+def ping(args):
+    hostname = args[1]
+    return hostname + ': ' + getstatus(hostname)
+
+
+parser = Helpparser('helpmsg')
+
+commands = {
+    'help': Command(gethelp, parser.gethelp('help')),
+    'commands': Command(listcommands, parser.gethelp('commands')),
+    'ping': Command(ping, parser.gethelp('ping'))
+}
+commands.update(commands.fromkeys(
+    ['getstatus', 'gs'], Command(readStatuses, parser.gethelp('getstatus'))))
+commands.update(commands.fromkeys(
+    ['groupadd', 'ga'], Command(ch.groupadd, parser.gethelp('groupadd'))))
+commands.update(commands.fromkeys(
+    ['groupdel', 'gd'], Command(ch.groupdel, parser.gethelp('groupdel'))))
+commands.update(commands.fromkeys(
+    ['grouplist', 'gls'], Command(ch.grouplist, parser.gethelp('grouplist'))))
+commands.update(commands.fromkeys(
+    ['groupmemberadd', 'gma'], Command(ch.groupmemberadd, parser.gethelp('groupmemberadd'))))
+commands.update(commands.fromkeys(
+    ['groupmemberdel', 'gmd'], Command(ch.groupmemberdel, parser.gethelp('groupmemberdel'))))
+commands.update(commands.fromkeys(
+    ['groupmemberlist', 'gmls'], Command(ch.groupmemberlist, parser.gethelp('groupmemberlist'))))
+commands.update(commands.fromkeys(
+    ['groupownerset', 'gos'], Command(ch.groupownerset, parser.gethelp('groupownerset'))))
+commands.update(commands.fromkeys(
+    ['serveradd', 'sa'], Command(ch.serveradd, parser.gethelp('serveradd'))))
+commands.update(commands.fromkeys(
+    ['serverdel', 'sd'], Command(ch.serverdel, parser.gethelp('serverdel'))))
+commands.update(commands.fromkeys(
+    ['serverlist', 'sls'], Command(ch.serverlist, parser.gethelp('serverlist'))))
+commands.update(commands.fromkeys(
+    ['serverdata', 'sdt'], Command(ch.serverdata, parser.gethelp('serverdata'))))
+commands.update(commands.fromkeys(
+    ['servernameset', 'sns'], Command(ch.servernameset, parser.gethelp('servernameset'))))
+commands.update(commands.fromkeys(
+    ['servernotifyset', 'sngs'], Command(ch.servernotifysetset, parser.gethelp('servernotifyset'))))
+commands.update(commands.fromkeys(
+    ['serverstatusset', 'ssgs'], Command(ch.serverstatusset, parser.gethelp('serverstatusset'))))
+
+parser = None  # parser is no longer needed
 
 
 def getstatus(hostname):
@@ -56,83 +131,17 @@ def update():
         threadupdate()
         updateMinute = minute
 
-        # day = time.strftime('%d')
-        # global updateDay
-        # if day != updateDay:
-        #     midnightreminder()
-        #     updateDay = day
-
 
 def executecommand(command, args, executor):
     try:
         command = command.lower()
-        if command == 'getstatus' or command == 'gs':
-            return readStatuses(args[0])
-
-        elif command == 'groupadd' or command == 'ga':
-            return ch.groupadd(args[0], executor)
-
-        elif command == 'groupdel' or command == 'gd':
-            return ch.groupdel(args[0], executor)
-
-        elif command == 'grouplist' or command == 'gls':
-            return ch.grouplist()
-
-        elif command == 'groupmemberadd' or command == 'gma':
-            return ch.groupmemberadd(args[0], executor, args[1])
-
-        elif command == 'groupmemberdel' or command == 'gmd':
-            return ch.groupmemberdel(args[0], executor, args[1])
-
-        elif command == 'groupmemberlist' or command == 'gmls':
-            return ch.groupmemberlist(args[0])
-
-        elif command == 'groupownerset' or command == 'gos':
-            return 'command not supported yet'
-
-        elif command == 'serveradd' or command == 'sa':
-            return ch.serveradd(args[0], executor, args[1], args[2], args[3])
-
-        elif command == 'serverdel' or command == 'sd':
-            return ch.serverdel(args[0], executor)
-
-        elif command == 'serverlist' or command == 'sls':
-            return ch.serverlist()
-
-        elif command == 'serverdata' or command == 'sdt':
-            return ch.serverdata(args[0])
-
-        elif command == 'servernameset' or command == 'sns':
-            return 'command not supported yet'
-
-        elif command == 'servernotifyset' or command == 'sns':
-            return 'command not supported yet'
-
-        elif command == 'serverstatusset' or command == 'ssgs':
-            return 'command not supported yet'
-
-        elif command == 'ping':
-            return ping(args[0])
-
-        else:
-            return 'Command ' + command + ' not supported. '
+        if command not in commands:
+            return 'Invalid command ' + command
+        args.insert(0, executor)
+        return commands[command].execute(args)
 
     except IndexError:
         return 'Incorrent number of arguments for command ' + command
-
-
-def readStatuses(statusgroup):
-    msg = statusgroup + ':'
-    for hostname, serverdata in ch.servers.items():
-        if serverdata.statusgroup.lower() == statusgroup.lower():
-            msg += '  ' + serverdata.prettyname + ':' + serverdata.status
-    if len(msg) == len(statusgroup) + 1:
-        msg = 'No registered servers have the statusgroup ' + statusgroup
-    return msg
-
-
-def ping(hostname):
-    return hostname + ': ' + getstatus(hostname)
 
 
 def savechanges():
