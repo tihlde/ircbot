@@ -40,7 +40,7 @@ def readStatuses(args):
 
 def listcommands(args):
     # find better way of doing this
-    return 'commands readstatuses ping groupadd groupdel grouplist groupmemberadd ' \
+    return 'commands readstatuses ping lastupdate groupadd groupdel grouplist groupmemberadd ' \
            'groupmemberdel groupmemberlist groupownerset serveradd serverdel ' \
            'serverlist serverdata servernameset servernotifyset serverstatusset'
 
@@ -48,6 +48,10 @@ def listcommands(args):
 def ping(args):
     hostname = args[1]
     return hostname + ': ' + getstatus(hostname)
+
+
+def getlastupdate(args):
+    return os.system('git log -1 --pretty=format:"%ad%x09%s"')
 
 
 parser = Helpparser('helpmsg')
@@ -87,6 +91,8 @@ commands.update(commands.fromkeys(
     ['servernotifyset', 'sngs'], Command(ch.servernotifysetset, parser.gethelp('servernotifyset'))))
 commands.update(commands.fromkeys(
     ['serverstatusset', 'ssgs'], Command(ch.serverstatusset, parser.gethelp('serverstatusset'))))
+commands.update(commands.fromkeys(
+        ['lastupdate', 'lup'], Command(getlastupdate, parser.gethelp('lastupdate'))))
 
 parser = None  # parser is no longer needed
 
