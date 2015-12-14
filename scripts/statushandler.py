@@ -3,6 +3,7 @@ __author__ = 'Harald Floor Wilhelmsen'
 
 import threading
 import os
+import subprocess
 import time
 
 import confighandler as ch
@@ -51,7 +52,7 @@ def ping(args):
 
 
 def getlastupdate(args):
-    return os.system('git log -1 --pretty=format:"%ad%x09%s"')
+    return str(subprocess.check_output('git log -1 --pretty=format:"%ad%x09%s"', shell=True)).replace('\t', '  ')
 
 
 parser = Helpparser('helpmsg')
@@ -92,7 +93,7 @@ commands.update(commands.fromkeys(
 commands.update(commands.fromkeys(
     ['serverstatusset', 'ssgs'], Command(ch.serverstatusset, parser.gethelp('serverstatusset'))))
 commands.update(commands.fromkeys(
-        ['lastupdate', 'lup'], Command(getlastupdate, parser.gethelp('lastupdate'))))
+    ['lastupdate', 'lup'], Command(getlastupdate, parser.gethelp('lastupdate'))))
 
 parser = None  # parser is no longer needed
 
