@@ -172,10 +172,35 @@ def serverdel(args):
 
 
 def serverlist(args):
-    msg = 'Servers:'
-    for hostname in servers.keys():
-        msg += '  ' + hostname
-    return msg
+    hosts = []
+    for h in servers.keys():
+        index = h.find('.')
+        hosts.append([h[:index], h[index + 1:]])
+    return getserverlistmsg(hosts)
+
+
+def getserverlistmsg(hosts):
+    ms = []
+    while hosts:
+        h = hosts[0]
+        hosts.pop(0)
+        ms.append(getmatches(h, hosts))
+    if len(ms) == 1:
+        return ms
+    return ', '.join(ms)
+
+def getmatches(h, hosts):
+    matches = []
+    toremove = []
+    for host in hosts:
+        if h[1] == host[1]:
+            matches.append(host[0])
+            toremove.append(host)
+    for host in toremove:
+        hosts.remove(host)
+    if not matches:
+        return h[0] + '.' + h[1]
+    return ' '.join(matches) + ': ' + h[1]
 
 
 def serverdata(args):
