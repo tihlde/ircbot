@@ -87,7 +87,7 @@ def groupdel(args):
     if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
     if gottengroup.owner.lower() == executer.lower():
-        del groups[gottengroup.groupname]
+        del groups[gottengroup.name]
         return 'Group ' + groupname + ' deleted'
     return 'You must be the owner of a group to delete it'
 
