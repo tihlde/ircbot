@@ -3,7 +3,6 @@ __author__ = 'Harald Floor Wilhelmsen'
 
 
 class Server(object):
-    status = '\x033,1oppe\x03'
 
     def __init__(self, hostname, owner, prettyname, statusgroup, notifygroup):
         self.hostname = hostname
@@ -11,6 +10,7 @@ class Server(object):
         self.prettyname = prettyname
         self.statusgroup = statusgroup
         self.notifygroup = notifygroup
+        self.status = '\x033,1oppe\x03'
 
     def __str__(self):
         string = self.hostname + " " + self.owner + ": " + self.prettyname + " " + self.statusgroup + " " + self.notifygroup
