@@ -1,6 +1,7 @@
 # coding: utf-8
 __author__ = 'Harald Floor Wilhelmsen'
 
+from contract import Contract
 from group import Group
 from server import Server
 
@@ -49,8 +50,38 @@ def readservers():
     return servers
 
 
+def execgos(args):
+    group = getdictelement(args[2], groups)
+    group.owner = args[1]
+    return 'Owner of group ' + group.name + ' is now ' + group.owner
+
+
+operations = {
+    'execgos': execgos
+}
+
+
+def readcontracts():
+    readfile = readdata('config/contracts.cfg')
+    temp = {}
+    for dataobject in readfile:
+        if dataobject.ident[0] == "contractid":
+            Contract.idincrement = int(dataobject.data[0])
+            continue
+        id = dataobject.ident[0]
+        operation = operations[dataobject.ident[1]]
+        temp[id] = Contract(operation, dataobject.data, id)
+    return temp
+
+
+def addcontract(operation, args):
+    contract = Contract.getnew(operation, args)
+    contracts[contract.contractid] = contract
+
+
 groups = readgroups()
 servers = readservers()
+contracts = readcontracts()
 
 
 def addusertogroup(user, groupname, recipient):
@@ -68,6 +99,10 @@ def saveconfig():
     configfile = open('config/groups.cfg', 'w')
     for groupname, groupobject in groups.items():
         configfile.write(groupobject.__str__() + '\n')
+    configfile = open('config/contracts.cfg', 'w')
+    configfile.write("contractid: " + str(Contract.idincrement) + '\n')
+    for id, contract in contracts.items():
+        configfile.write(str(contract))
 
 
 def groupadd(args):
@@ -139,7 +174,13 @@ def groupmemberlist(args):
 
 
 def groupownerset(args):
-    return 'command not supported yet'
+    groupname = args[2]
+    gottengroup = getdictelement(groupname, groups)
+    if not gottengroup:
+        return 'Group ' + groupname + ' does not exist'
+    addcontract("execgos", args)
+    return 'Contract created, waiting for ' + args[
+        1] + ' to sign it. See ">help contracts" for help'
 
 
 def serveradd(args):
@@ -155,7 +196,7 @@ def serveradd(args):
     if not gottengroup:
         return 'Group ' + notifygroup + ' does not exist'
     servers[hostname.lower()] = Server(hostname.lower(), executer, prettyname, statusgroup,
-        notifygroup)
+                                       notifygroup)
     return 'Server ' + hostname + ' added'
 
 
@@ -188,6 +229,7 @@ def getserverlistmsg(hosts):
     if len(ms) == 1:
         return ms
     return ', '.join(ms)
+
 
 def getmatches(h, hosts):
     matches = []
