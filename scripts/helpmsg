@@ -2,21 +2,22 @@ help:>help <command>. A hash ("#") signifies needed privilege to execute the com
 commands:commands getstatus ping groupadd groupdel grouplist groupmemberadd groupmemberdel groupmemberlist groupownerset serveradd serverdel serverlist serverdata servernameset servernotifyset serverstatusset
 getstatus:Returns a string with the statuses of the servers in the given statusgroup. $statusgroup &gs
 ping:Returns the status of the given hostname. $hostname
-sign:Signs the contract with the given id. $contractid
+sign:Signs the contract with the given id. #signatory $contractid
+cancel:Cancels the contract with the given id. #signatory $contractid
 contracts:Lists all contracts where you are the intended signatory
 lastupdate:Returns the commit-message and date of the last commit &lup
 lastupdate:Shows the commitmsg from the last update of the bot.
 groupadd:Adds a group with the given name. You are automatically added to the group and set as the owner. $groupname &ga
-groupdel:Deletes the group with the given name. #owner $groupname &gd
+groupdel:Deletes the group with the given name. #groupowner $groupname &gd
 grouplist:A list of the groups that exist. &gls
 groupmemberadd:Adds the given username to the given group. $groupname username &gma
 groupmemberdel:Removes the given username from the given group. $groupname username &gmd
 groupmemberlist:Lists the members of the given group. $groupname &gmls
-groupownerset:Sets a new owner to the given group. #owner $groupname newowner &gos
+groupownerset:Sets a new owner to the given group. #groupowner $groupname newowner &gos
 serveradd:Adds a new server with the given data with you as the owner. $hostname prettyname statusgroup membergroup &sa
-serverdel:Deletes the server with the given hostname. #owner $hostname &sd
+serverdel:Deletes the server with the given hostname. #serverowner $hostname &sd
 serverlist:Lists the hostname of all servers added. &sls
 serverdata:Lists the data for the given hostname. $hostname &sdt
-servernameset:Sets a new name for the given server. #owner $hostname newname &sns
-servernotifyset:Sets the notifygroup of the given server. #owner $hostname newgroup &sngs
-serverstatusset:Sets the statugroup of the given server. #owner $hostname newgroup &ssgs
+servernameset:Sets a new name for the given server. #serverowner $hostname newname &sns
+servernotifyset:Sets the notifygroup of the given server. #serverowner $hostname newgroup &sngs
+serverstatusset:Sets the statugroup of the given server. #serverowner $hostname newgroup &ssgs
