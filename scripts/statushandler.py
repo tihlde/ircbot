@@ -60,7 +60,9 @@ parser = Helpparser('helpmsg')
 commands = {
     'help': Command(gethelp, parser.gethelp('help')),
     'commands': Command(listcommands, parser.gethelp('commands')),
-    'ping': Command(ping, parser.gethelp('ping'))
+    'ping': Command(ping, parser.gethelp('ping')),
+    'sign': Command(ch.signcontract, parser.gethelp('ping')),
+    'cancel': Command(ch.cancelcontract, parser.gethelp('ping'))
 }
 commands.update(commands.fromkeys(
     ['getstatus', 'gs'], Command(readStatuses, parser.gethelp('getstatus'))))
