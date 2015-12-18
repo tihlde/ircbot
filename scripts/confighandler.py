@@ -1,10 +1,16 @@
 # coding: utf-8
+import time
+
 __author__ = 'Harald Floor Wilhelmsen'
 
 from contract import Contract
 from group import Group
 from server import Server
 
+
+def setbot(ircbot):
+    global bot
+    bot = ircbot
 
 class Dataobject(object):
     def __init__(self, ident, data):
@@ -70,12 +76,12 @@ def readcontracts():
             continue
         id = dataobject.ident[0]
         operation = operations[dataobject.ident[1]]
-        temp[id] = Contract(operation, dataobject.data, id)
+        temp[id] = Contract(operation, dataobject.data, id, float(dataobject.ident[2]))
     return temp
 
 
 def addcontract(operation, args):
-    contract = Contract.getnew(operation, args)
+    contract = Contract.getnew(operation, args, bot)
     contracts[contract.contractid] = contract
 
 
@@ -178,9 +184,28 @@ def groupownerset(args):
     gottengroup = getdictelement(groupname, groups)
     if not gottengroup:
         return 'Group ' + groupname + ' does not exist'
-    addcontract("execgos", args)
-    return 'Contract created, waiting for ' + args[
-        1] + ' to sign it. See ">help contracts" for help'
+    return addcontract("execgos", args)
+
+
+def cancelcontract(args):
+    contract = getdictelement(args[1], contracts)
+    if not contract:
+        return 'No contract with id ' + str(args[1]) + ' exists'
+    if contract.args[0] == args[0] or contract.args[1] == args[0]:
+        contracts.pop(contract)
+        return 'Contract with id ' + str(args[1]) + ' successfully canceled.'
+    return 'You must be a signatory of this contract to cancel it.'
+
+
+def signcontract(args):
+    contract = getdictelement(args[1], contracts)
+    if not contract:
+        return 'No contract with id ' + str(args[1]) + ' exists'
+    if contract.args[0] == args[0] or contract.args[1] == args[0]:
+        msg = contract.sign(args)
+        contracts.pop(contract)
+        return msg
+    return 'You must be a signatory of this contract to sign it.'
 
 
 def serveradd(args):
@@ -287,6 +312,10 @@ def serverstatusset(args):
     newstatus = args[2]
     gottenserver.statusgroup = newstatus
     return 'Nameset successful. statusgroup of ' + gottenserver.hostname + ' is now: ' + gottenserver.statusgroup
+
+
+def listcontracts(args):
+    return '; '.join(map(Contract.prettyprint, contracts.values()))
 
 
 def getdictelement(get, dict):
