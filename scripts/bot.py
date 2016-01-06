@@ -1,50 +1,15 @@
 # coding: utf-8
 __author__ = 'Harald Floor Wilhelmsen'
 
-import socket
 import atexit
+import socket
 import time
 
-import statushandler as sh
 import discohandler as dh
+import statushandler as sh
+
 
 class Bot(object):
-
-    def __init__(self, ircserver, channel, botnick, password):
-        self.ircserver = ircserver
-        self.channel = channel
-        self.botnick = botnick
-        self.password = password
-
-
-    def send(self, msg):
-        msg += '\r\n'
-        print('SENDING')
-        print(msg)
-        self.ircsock.send(msg)
-
-
-    def sendtext(self, msg, rec):
-        self.send('NOTICE ' + rec + ' :' + msg)
-
-
-    def findname(self, text):
-        return text[1:text.find('!')]
-
-
-    def requestnames(self):
-        self.send('NAMES #tihlde-drift')
-
-    def connect(self):
-        self.ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.ircsock.connect((self.ircserver, 6667))
-        self.send('USER ' + self.botnick + ' ' + self.botnick + ' ' + self.ircserver + ' : Falkner, from Violet City')
-        self.send('NICK ' + self.botnick)
-        self.send('JOIN ' + self.channel + ' ' + self.password)  # join channel
-        self.lastping = time.time()
-
-
-    @atexit.register
     def exitbot(self):
         print('Shutting down bot...')
         sh.savechanges()
@@ -57,6 +22,36 @@ class Bot(object):
         print('Socket closed')
         print('*** Shutdown complete ***')
 
+    def __init__(self, ircserver, channel, botnick, password):
+        self.ircserver = ircserver
+        self.channel = channel
+        self.botnick = botnick
+        self.password = password
+        atexit.register(self.exitbot)
+
+    def send(self, msg):
+        msg += '\r\n'
+        print('SENDING')
+        print(msg)
+        self.ircsock.send(msg)
+
+    def sendtext(self, msg, rec):
+        self.send('NOTICE ' + rec + ' :' + msg)
+
+    def findname(self, text):
+        return text[1:text.find('!')]
+
+    def requestnames(self):
+        self.send('NAMES #tihlde-drift')
+
+    def connect(self):
+        self.ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.ircsock.connect((self.ircserver, 6667))
+        self.send(
+            'USER ' + self.botnick + ' ' + self.botnick + ' ' + self.ircserver + ' : Falkner, from Violet City')
+        self.send('NICK ' + self.botnick)
+        self.send('JOIN ' + self.channel + ' ' + self.password)  # join channel
+        self.lastping = time.time()
 
     def update(self):
         ircmsg = self.ircsock.recv(2048)  # receive data from the server
@@ -85,7 +80,8 @@ class Bot(object):
             command = ircmsg[angleindex + 1:]
             argsstart = command.find(' ')
             # Splits args-segment of string into strings and removes empty entries
-            args = filter(None, [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')])
+            args = filter(None,
+                          [x.replace(' ', '') for x in command[argsstart:].strip().split(' ')])
             command = command[:argsstart].strip()
             self.sendtext(sh.executecommand(command, args, sender), recipient)
 
@@ -93,7 +89,7 @@ class Bot(object):
         if ircmsg.find('PING :') != -1:  # respond to pings
             self.lastping = now
             self.send('PONG ' + ircmsg[ircmsg.find(':') + 1:])
-        elif now > self.lastping + 300: # Reconnect on timeout
+        elif now > self.lastping + 300:  # Reconnect on timeout
             self.connect()
 
         sh.update()
@@ -102,5 +98,5 @@ class Bot(object):
                 group = sh.getgroup(serverdata.notifygroup)
                 for name in group.members:
                     self.sendtext('Statusendring: ' + serverdata.prettyname
-                             + ' er nå ' + serverdata.status, name)
+                                  + ' er nå ' + serverdata.status, name)
             sh.updatechanges = []
